@@ -30,7 +30,7 @@ for dependent and variable length fields is built in.
 
 = Installation
 
-  $ sudo gem install bindata
+  $ sudo gem install jsitarski-bindata
 
   -or-
 
@@ -46,5 +46,5 @@ for dependent and variable length fields is built in.
 
 = Contact
 
-If you have any queries / bug reports / suggestions, please contact me
-(Dion Mendel) via email at dion@lostrealm.com
+For most queries / bug reports / suggestions, please contact the bindata project owner at
+(Dion Mendel) via email at dion@lostrealm.com as this is a fork that is not maintained.
