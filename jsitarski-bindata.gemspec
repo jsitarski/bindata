@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'bindata/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "bindata"
+  gem.name          = "jsitarski-bindata"
   gem.version       = BinData::VERSION
   gem.authors       = ["John-Paul Sitarski"]
   gem.email         = ["jsitarski@gmail.com"]
