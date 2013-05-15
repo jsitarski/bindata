@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
 
   ruby''s #pack and #unpack methods.}
   gem.summary       = %q{A declarative way to read and write binary file formats}
-  gem.homepage      = "http://"
+  gem.homepage      = "http://bindata.rubyforge.org"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
