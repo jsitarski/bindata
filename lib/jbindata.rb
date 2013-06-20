@@ -3,6 +3,7 @@
 
 require 'jbindata/array'
 require 'jbindata/bits'
+require 'jbindata/base_primitive'
 require 'jbindata/choice'
 require 'jbindata/count_bytes_remaining'
 require 'jbindata/float'
