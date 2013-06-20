@@ -23,7 +23,7 @@ module JBinData
   #
   # <tt>:length</tt>:: The number of bytes to skip.
   #
-  class Skip < BinData::BasePrimitive
+  class Skip < JBinData::BasePrimitive
 
     mandatory_parameter :length
 
