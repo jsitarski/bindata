@@ -45,6 +45,7 @@ module JBinData
   #                           or failure.  Any other return is compared to
   #                           the value just read in.
   class BasePrimitive < JBinData::Base
+    puts "required"*50
     unregister_self
 
     optional_parameters :initial_value, :value, :check_value
