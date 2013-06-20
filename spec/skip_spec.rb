@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata/skip'
+require 'jbindata/skip'
 
-describe BinData::Skip do
-  subject { BinData::Skip.new(:length => 5) }
+describe JBinData::Skip do
+  subject {JBinData::Skip.new(:length => 5) }
   let(:io) { StringIO.new("abcdefghij") }
 
   it { should == "" }

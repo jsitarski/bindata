@@ -1,29 +1,29 @@
-require 'bindata/base'
-require 'bindata/dsl'
+require 'jbindata/base'
+require 'jbindata/dsl'
 
-module BinData
+module JBinData
   # An Array is a list of data objects of the same type.
   #
-  #   require 'bindata'
+  #   require 'jbindata'
   #
   #   data = "\x03\x04\x05\x06\x07\x08\x09"
   #
-  #   obj = BinData::Array.new(:type => :int8, :initial_length => 6)
+  #   obj =JBinData::Array.new(:type => :int8, :initial_length => 6)
   #   obj.read(data) #=> [3, 4, 5, 6, 7, 8]
   #
-  #   obj = BinData::Array.new(:type => :int8,
+  #   obj =JBinData::Array.new(:type => :int8,
   #                            :read_until => lambda { index == 1 })
   #   obj.read(data) #=> [3, 4]
   #
-  #   obj = BinData::Array.new(:type => :int8,
+  #   obj =JBinData::Array.new(:type => :int8,
   #                            :read_until => lambda { element >= 6 })
   #   obj.read(data) #=> [3, 4, 5, 6]
   #
-  #   obj = BinData::Array.new(:type => :int8,
+  #   obj =JBinData::Array.new(:type => :int8,
   #           :read_until => lambda { array[index] + array[index - 1] == 13 })
   #   obj.read(data) #=> [3, 4, 5, 6, 7]
   #
-  #   obj = BinData::Array.new(:type => :int8, :read_until => :eof)
+  #   obj =JBinData::Array.new(:type => :int8, :read_until => :eof)
   #   obj.read(data) #=> [3, 4, 5, 6, 7, 8, 9]
   #
   # == Parameters
@@ -47,7 +47,7 @@ module BinData
   #
   # Each data object in an array has the variable +index+ made available
   # to any lambda evaluated as a parameter of that data object.
-  class Array < BinData::Base
+  class Array < JBinData::Base
     include DSLMixin
     include Enumerable
 

@@ -1,6 +1,6 @@
-require 'bindata/base'
+require 'jbindata/base'
 
-module BinData
+module JBinData
 
   class Base
     optional_parameter :onlyif  # Used by Struct
@@ -8,7 +8,7 @@ module BinData
 
   # A Struct is an ordered collection of named data objects.
   #
-  #    require 'bindata'
+  #    require 'jbindata'
   #
   #    class Tuple < BinData::Record
   #      int8  :x
@@ -50,7 +50,7 @@ module BinData
   # [<tt>:onlyif</tt>]   Used to indicate a data object is optional.
   #                      if +false+, this object will not be included in any
   #                      calls to #read, #write, #num_bytes or #snapshot.
-  class Struct < BinData::Base
+  class Struct < JBinData::Base
 
     mandatory_parameter :fields
     optional_parameters :endian, :hide
@@ -298,7 +298,7 @@ module BinData
     end
 
     def as_stringified_hash(val)
-      if BinData::Struct === val
+      if JBinData::Struct === val
         val
       elsif val.nil?
         {}

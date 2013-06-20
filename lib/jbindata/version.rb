@@ -1,3 +1,3 @@
-module BinData
+module JBinData
   VERSION = "1.4.6"
 end

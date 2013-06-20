@@ -1,20 +1,20 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata'
+require 'jbindata'
 
-describe BinData::Struct, "when initializing" do
+describe JBinData::Struct, "when initializing" do
   it "fails on non registered types" do
     params = {:fields => [[:non_registered_type, :a]]}
     expect {
-      BinData::Struct.new(params)
-    }.to raise_error(BinData::UnRegisteredTypeError)
+     JBinData::Struct.new(params)
+    }.to raise_error(JBinData::UnRegisteredTypeError)
   end
 
   it "fails on duplicate names" do
     params = {:fields => [[:int8, :a], [:int8, :b], [:int8, :a]]}
     expect {
-      BinData::Struct.new(params)
+     JBinData::Struct.new(params)
     }.to raise_error(NameError)
   end
 
@@ -22,33 +22,33 @@ describe BinData::Struct, "when initializing" do
     # note that #invert is from Hash.instance_methods
     params = {:fields => [[:int8, :a], [:int8, :invert]]}
     expect {
-      BinData::Struct.new(params)
+     JBinData::Struct.new(params)
     }.to raise_error(NameError)
   end
 
   it "fails when field name shadows an existing method" do
     params = {:fields => [[:int8, :object_id]]}
     expect {
-      BinData::Struct.new(params)
+     JBinData::Struct.new(params)
     }.to raise_error(NameError)
   end
 
   it "fails on unknown endian" do
     params = {:endian => 'bad value', :fields => []}
     expect {
-      BinData::Struct.new(params)
+     JBinData::Struct.new(params)
     }.to raise_error(ArgumentError)
   end
 end
 
-describe BinData::Struct, "with anonymous fields" do
+describe JBinData::Struct, "with anonymous fields" do
   subject {
     params = { :fields => [
                             [:int8, :a, {:initial_value => 5}],
                             [:int8, nil],
                             [:int8, '', {:value => :a}]
                           ] }
-    BinData::Struct.new(params)
+   JBinData::Struct.new(params)
   }
 
   it "only shows non anonymous fields" do
@@ -67,7 +67,7 @@ describe BinData::Struct, "with anonymous fields" do
   end
 end
 
-describe BinData::Struct, "with hidden fields" do
+describe JBinData::Struct, "with hidden fields" do
   subject {
     params = { :hide => [:b, :c],
                :fields => [
@@ -75,7 +75,7 @@ describe BinData::Struct, "with hidden fields" do
                    [:int8, 'b', {:initial_value => 5}],
                    [:int8, :c],
                    [:int8, :d, {:value => :b}]] }
-    BinData::Struct.new(params)
+   JBinData::Struct.new(params)
   }
 
   it "only shows fields that aren't hidden" do
@@ -100,9 +100,9 @@ describe BinData::Struct, "with hidden fields" do
   end
 end
 
-describe BinData::Struct, "with multiple fields" do
+describe JBinData::Struct, "with multiple fields" do
   let(:params) { { :fields => [ [:int8, :a], [:int8, :b] ] } }
-  subject { BinData::Struct.new({:a => 1, :b => 2}, params) }
+  subject {JBinData::Struct.new({:a => 1, :b => 2}, params) }
 
   its(:field_names) { should == ["a", "b"] }
   its(:to_binary_s) { should == "\x01\x02" }
@@ -114,9 +114,9 @@ describe BinData::Struct, "with multiple fields" do
   end
 
   it "identifies accepted parameters" do
-    BinData::Struct.accepted_parameters.all.should include(:fields)
-    BinData::Struct.accepted_parameters.all.should include(:hide)
-    BinData::Struct.accepted_parameters.all.should include(:endian)
+   JBinData::Struct.accepted_parameters.all.should include(:fields)
+   JBinData::Struct.accepted_parameters.all.should include(:hide)
+   JBinData::Struct.accepted_parameters.all.should include(:endian)
   end
 
   it "clears" do
@@ -178,7 +178,7 @@ describe BinData::Struct, "with multiple fields" do
   end
 
   it "assigns from Struct" do
-    src = BinData::Struct.new(params)
+    src =JBinData::Struct.new(params)
     src.a = 3
     src.b = 4
 
@@ -188,7 +188,7 @@ describe BinData::Struct, "with multiple fields" do
   end
 
   it "assigns from snapshot" do
-    src = BinData::Struct.new(params)
+    src =JBinData::Struct.new(params)
     src.a = 3
     src.b = 4
 
@@ -220,7 +220,7 @@ describe BinData::Struct, "with multiple fields" do
   end
 end
 
-describe BinData::Struct, "with nested structs" do
+describe JBinData::Struct, "with nested structs" do
   subject {
     inner1 = [ [:int8, :w, {:initial_value => 3}],
                [:int8, :x, {:value => :the_val}] ]
@@ -232,7 +232,7 @@ describe BinData::Struct, "with nested structs" do
                  [:int8, :a, {:initial_value => 6}],
                  [:struct, :b, {:fields => inner1, :the_val => :a}],
                  [:struct, :c, {:fields => inner2}]] }
-    BinData::Struct.new(params)
+   JBinData::Struct.new(params)
   }
 
   its(:field_names) { should == ["a", "b", "c"] }
@@ -259,9 +259,9 @@ describe BinData::Struct, "with nested structs" do
   end
 end
 
-describe BinData::Struct, "with an endian defined" do
+describe JBinData::Struct, "with an endian defined" do
   subject {
-    BinData::Struct.new(:endian => :little,
+   JBinData::Struct.new(:endian => :little,
                         :fields => [
                                      [:uint16, :a],
                                      [:float, :b],
@@ -295,10 +295,10 @@ describe BinData::Struct, "with an endian defined" do
   end
 end
 
-describe BinData::Struct, "with bit fields" do
+describe JBinData::Struct, "with bit fields" do
   subject {
     params = { :fields => [ [:bit1le, :a], [:bit2le, :b], [:uint8, :c], [:bit1le, :d] ] }
-    BinData::Struct.new({:a => 1, :b => 2, :c => 3, :d => 1}, params)
+   JBinData::Struct.new({:a => 1, :b => 2, :c => 3, :d => 1}, params)
   }
 
   its(:num_bytes) { should == 3 }
@@ -321,7 +321,7 @@ describe BinData::Struct, "with bit fields" do
   end
 end
 
-describe BinData::Struct, "with nested endian" do
+describe JBinData::Struct, "with nested endian" do
   it "uses correct endian" do
     nested_params = { :endian => :little,
                       :fields => [[:int16, :b], [:int16, :c]] }
@@ -329,7 +329,7 @@ describe BinData::Struct, "with nested endian" do
                :fields => [[:int16, :a],
                            [:struct, :s, nested_params],
                            [:int16, :d]] }
-    subject = BinData::Struct.new(params)
+    subject =JBinData::Struct.new(params)
     subject.read("\x00\x01\x02\x00\x03\x00\x00\x04")
 
     subject.a.should   == 1

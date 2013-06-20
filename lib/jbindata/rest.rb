@@ -1,6 +1,6 @@
-require "bindata/base_primitive"
+require "jbindata/base_primitive"
 
-module BinData
+module JBinData
   # Rest will consume the input stream from the current position to the end of
   # the stream.  This will mainly be useful for debugging and developing.
   #
@@ -15,7 +15,7 @@ module BinData
   #   obj.a #=> "abcde"
   #   obj.rest #=" "fghij"
   #
-  class Rest < BinData::BasePrimitive
+  class Rest < JBinData::BasePrimitive
 
     #---------------
     private

@@ -1,4 +1,4 @@
-module BinData
+module JBinData
   module DSLMixin
     def self.included(base) #:nodoc:
       base.extend ClassMethods
@@ -166,9 +166,9 @@ module BinData
 
       def params_from_block(type, &block)
         bindata_classes = {
-          :array  => BinData::Array,
-          :choice => BinData::Choice,
-          :struct => BinData::Struct
+          :array  => JBinData::Array,
+          :choice => JBinData::Choice,
+          :struct => JBinData::Struct
         }
 
         if bindata_classes.include?(type)
@@ -268,7 +268,7 @@ module BinData
       end
 
       def name_is_reserved?(name)
-        BinData::Struct::RESERVED.include?(name.to_sym)
+        JBinData::Struct::RESERVED.include?(name.to_sym)
       end
 
       def dsl_raise(exception, message)
@@ -315,7 +315,7 @@ module BinData
     end
 
     # An array containing a field definition of the form
-    # expected by BinData::Struct.
+    # expected byJBinData::Struct.
     class UnSanitizedField < ::Array
       def initialize(type, name, params)
         super()

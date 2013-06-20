@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata/lazy'
+require 'jbindata/lazy'
 
 # A mock data object with customizable fields.
-class MockBinDataObject
+class MocJBinDataObject
   def initialize(methods = {}, params = {}, parent = nil)
     meta = class << self ; self; end
     methods.each do |k,v|
@@ -24,7 +24,7 @@ class MockBinDataObject
   end
 
   def lazy_evaluator
-    BinData::LazyEvaluator.new(self)
+   JBinData::LazyEvaluator.new(self)
   end
 
   alias_method :safe_respond_to?, :respond_to?
@@ -34,11 +34,11 @@ def lazy_eval(*rest)
   subject.lazy_evaluator.lazy_eval(*rest)
 end
 
-describe BinData::LazyEvaluator, "with no parents" do
+describe JBinData::LazyEvaluator, "with no parents" do
   subject {
     methods = {:m1 => 'm1', :com => 'mC'}
     params  = {:p1 => 'p1', :com => 'pC'}
-    MockBinDataObject.new(methods, params)
+    MocJBinDataObject.new(methods, params)
   }
 
   it "evaluates raw value when instantiated" do
@@ -72,11 +72,11 @@ describe BinData::LazyEvaluator, "with no parents" do
   end
 end
 
-describe BinData::LazyEvaluator, "with one parent" do
+describe JBinData::LazyEvaluator, "with one parent" do
   subject {
     parent_methods = {:m1 => 'Pm1', :com => 'PmC', :mm => 3}
     parent_params  = {:p1 => 'Pp1', :com => 'PpC'}
-    parent_obj = MockBinDataObject.new(parent_methods, parent_params)
+    parent_obj = MocJBinDataObject.new(parent_methods, parent_params)
 
     def parent_obj.echo(a1, a2)
       [a1, a2]
@@ -84,7 +84,7 @@ describe BinData::LazyEvaluator, "with one parent" do
 
     methods = {:m1 => 'm1', :com => 'mC'}
     params  = {:p1 => 'p1', :com => 'pC'}
-    MockBinDataObject.new(methods, params, parent_obj)
+    MocJBinDataObject.new(methods, params, parent_obj)
   }
 
   it "evaluates raw value" do
@@ -132,11 +132,11 @@ describe BinData::LazyEvaluator, "with one parent" do
   end
 end
 
-describe BinData::LazyEvaluator, "with nested parents" do
+describe JBinData::LazyEvaluator, "with nested parents" do
   subject {
     pparent_methods = {:m1 => 'PPm1', :m2 => 'PPm2', :com => 'PPmC'}
     pparent_params  = {:p1 => 'PPp1', :p2 => 'PPp2', :com => 'PPpC'}
-    pparent_obj = MockBinDataObject.new(pparent_methods, pparent_params)
+    pparent_obj = MocJBinDataObject.new(pparent_methods, pparent_params)
 
     def pparent_obj.echo(arg)
       ["PP", arg]
@@ -148,7 +148,7 @@ describe BinData::LazyEvaluator, "with nested parents" do
 
     parent_methods = {:m1 => 'Pm1', :com => 'PmC', :sym1 => :m2, :sym2 => lambda { m2 }}
     parent_params  = {:p1 => 'Pp1', :com => 'PpC'}
-    parent_obj = MockBinDataObject.new(parent_methods, parent_params, pparent_obj)
+    parent_obj = MocJBinDataObject.new(parent_methods, parent_params, pparent_obj)
 
     def parent_obj.echo(arg)
       ["P", arg]
@@ -156,7 +156,7 @@ describe BinData::LazyEvaluator, "with nested parents" do
 
     methods = {:m1 => 'm1', :com => 'mC'}
     params  = {:p1 => 'p1', :com => 'pC'}
-    MockBinDataObject.new(methods, params, parent_obj)
+    MocJBinDataObject.new(methods, params, parent_obj)
   }
 
   it "accepts symbols as a shortcut to lambdas" do

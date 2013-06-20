@@ -2,38 +2,38 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
 require File.expand_path(File.join(File.dirname(__FILE__), "example"))
-require 'bindata/array'
-require 'bindata/int'
-require 'bindata/string'
+require 'jbindata/array'
+require 'jbindata/int'
+require 'jbindata/string'
 
-describe BinData::Array, "when instantiating" do
+describe JBinData::Array, "when instantiating" do
   context "with no mandatory parameters supplied" do
     it "raises an error" do
       args = {}
-      expect { BinData::Array.new(args) }.to raise_error(ArgumentError)
+      expect {JBinData::Array.new(args) }.to raise_error(ArgumentError)
     end
   end
 
   context "with some but not all mandatory parameters supplied" do
     it "raises an error" do
       args = {:initial_length => 3}
-      expect { BinData::Array.new(args) }.to raise_error(ArgumentError)
+      expect {JBinData::Array.new(args) }.to raise_error(ArgumentError)
     end
   end
 
   it "fails if a given type is unknown" do
     args = {:type => :does_not_exist, :initial_length => 3}
-    expect { BinData::Array.new(args) }.to raise_error(BinData::UnRegisteredTypeError)
+    expect {JBinData::Array.new(args) }.to raise_error(JBinData::UnRegisteredTypeError)
   end
 
   it "does not allow both :initial_length and :read_until" do
     args = {:initial_length => 3, :read_until => lambda { false } }
-    expect { BinData::Array.new(args) }.to raise_error(ArgumentError)
+    expect {JBinData::Array.new(args) }.to raise_error(ArgumentError)
   end
 end
 
-describe BinData::Array, "with no elements" do
-  subject { BinData::Array.new(:type => :example_single) }
+describe JBinData::Array, "with no elements" do
+  subject {JBinData::Array.new(:type => :example_single) }
 
   it { should be_clear }
   it { should be_empty }
@@ -50,10 +50,10 @@ describe BinData::Array, "with no elements" do
   end
 end
 
-describe BinData::Array, "with several elements" do
+describe JBinData::Array, "with several elements" do
   subject {
     type = [:example_single, {:initial_value => lambda { index + 1 }}]
-    BinData::Array.new(:type => type, :initial_length => 5)
+   JBinData::Array.new(:type => type, :initial_length => 5)
   }
 
   it { should be_clear }
@@ -82,7 +82,7 @@ describe BinData::Array, "with several elements" do
   end
 
   it "assigns a bindata array" do
-    array = BinData::Array.new([4, 5, 6], :type => :example_single)
+    array =JBinData::Array.new([4, 5, 6], :type => :example_single)
     subject.assign(array)
     subject.should == [4, 5, 6]
   end
@@ -174,10 +174,10 @@ describe BinData::Array, "with several elements" do
   end
 end
 
-describe BinData::Array, "when accessing elements" do
+describe JBinData::Array, "when accessing elements" do
   subject {
     type = [:example_single, {:initial_value => lambda { index + 1 }}]
-    data = BinData::Array.new(:type => type, :initial_length => 5)
+    data =JBinData::Array.new(:type => type, :initial_length => 5)
     data.assign([1, 2, 3, 4, 5])
     data
   }
@@ -243,12 +243,12 @@ describe BinData::Array, "when accessing elements" do
   end
 end
 
-describe BinData::Array, "with :read_until" do
+describe JBinData::Array, "with :read_until" do
 
   context "containing +element+" do
     it "reads until the sentinel is reached" do
       read_until = lambda { element == 5 }
-      subject = BinData::Array.new(:type => :int8, :read_until => read_until)
+      subject =JBinData::Array.new(:type => :int8, :read_until => read_until)
 
       subject.read "\x01\x02\x03\x04\x05\x06\x07\x08"
       subject.should == [1, 2, 3, 4, 5]
@@ -258,7 +258,7 @@ describe BinData::Array, "with :read_until" do
   context "containing +array+ and +index+" do
     it "reads until the sentinel is reached" do
       read_until = lambda { index >= 2 and array[index - 2] == 5 }
-      subject = BinData::Array.new(:type => :int8, :read_until => read_until)
+      subject =JBinData::Array.new(:type => :int8, :read_until => read_until)
 
       subject.read "\x01\x02\x03\x04\x05\x06\x07\x08"
       subject.should == [1, 2, 3, 4, 5, 6, 7]
@@ -267,14 +267,14 @@ describe BinData::Array, "with :read_until" do
 
   context ":eof" do
     it "reads records until eof" do
-      subject = BinData::Array.new(:type => :int8, :read_until => :eof)
+      subject =JBinData::Array.new(:type => :int8, :read_until => :eof)
 
       subject.read "\x01\x02\x03"
       subject.should == [1, 2, 3]
     end
 
     it "reads records until eof, ignoring partial records" do
-      subject = BinData::Array.new(:type => :int16be, :read_until => :eof)
+      subject =JBinData::Array.new(:type => :int16be, :read_until => :eof)
 
       subject.read "\x00\x01\x00\x02\x03"
       subject.should == [1, 2]
@@ -282,17 +282,17 @@ describe BinData::Array, "with :read_until" do
 
     it "reports exceptions" do
       array_type = [:string, {:read_length => lambda { unknown_variable }}]
-      subject = BinData::Array.new(:type => array_type, :read_until => :eof)
+      subject =JBinData::Array.new(:type => array_type, :read_until => :eof)
       expect { subject.read "\x00\x01\x00\x02\x03" }.to raise_error
     end
   end
 end
 
-describe BinData::Array, "nested within an Array" do
+describe JBinData::Array, "nested within an Array" do
   subject {
     nested_array_params = { :type => [:int8, { :initial_value => :index }],
                             :initial_length => lambda { index + 1 } }
-    BinData::Array.new(:type => [:array, nested_array_params],
+   JBinData::Array.new(:type => [:array, nested_array_params],
                        :initial_length => 3)
   }
 
@@ -304,8 +304,8 @@ describe BinData::Array, "nested within an Array" do
   end
 end
 
-describe BinData::Array, "subclassed" do
-  class IntArray < BinData::Array
+describe JBinData::Array, "subclassed" do
+  class IntArray < JBinData::Array
     endian :big
     default_parameter :initial_element_value => 0
 

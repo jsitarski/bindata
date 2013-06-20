@@ -1,20 +1,20 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata'
+require 'jbindata'
 
-describe BinData::Wrapper do
+describe JBinData::Wrapper do
   it "is not registered" do
     expect {
-      BinData::RegisteredClasses.lookup("Wrapper")
-    }.to raise_error(BinData::UnRegisteredTypeError)
+     JBinData::RegisteredClasses.lookup("Wrapper")
+    }.to raise_error(JBinData::UnRegisteredTypeError)
   end
 end
 
-describe BinData::Wrapper, "with errors" do
+describe JBinData::Wrapper, "with errors" do
   it "does not wrap more than one type" do
     lambda {
-      class WrappedMultipleTypes < BinData::Wrapper
+      class WrappedMultipleTypes < JBinData::Wrapper
         uint8
         uint8
       end
@@ -25,7 +25,7 @@ describe BinData::Wrapper, "with errors" do
 
   it "fails if wrapped type has a name" do
     lambda {
-      class WrappedWithName < BinData::Wrapper
+      class WrappedWithName < JBinData::Wrapper
         uint8 :a
       end
     }.should raise_error_on_line(SyntaxError, 2) { |err|
@@ -34,7 +34,7 @@ describe BinData::Wrapper, "with errors" do
   end
 
   it "fails if no types to wrap" do
-    class WrappedNoTypes < BinData::Wrapper
+    class WrappedNoTypes < JBinData::Wrapper
     end
 
     lambda {
@@ -45,8 +45,8 @@ describe BinData::Wrapper, "with errors" do
   end
 end
 
-describe BinData::Wrapper, "around a Primitive" do
-  class WrappedPrimitive < BinData::Wrapper
+describe JBinData::Wrapper, "around a Primitive" do
+  class WrappedPrimitive < JBinData::Wrapper
     default_parameter :a => 3
 
     uint8 :initial_value => :a
@@ -94,8 +94,8 @@ describe BinData::Wrapper, "around a Primitive" do
   end
 end
 
-describe BinData::Wrapper, "around an Array" do
-  class WrappedIntArray < BinData::Wrapper
+describe JBinData::Wrapper, "around an Array" do
+  class WrappedIntArray < JBinData::Wrapper
     endian :big
     default_parameter :initial_element_value => 0
     array do
@@ -114,8 +114,8 @@ describe BinData::Wrapper, "around an Array" do
   end
 end
 
-describe BinData::Wrapper, "around a Choice" do
-  class WrappedChoice < BinData::Wrapper
+describe JBinData::Wrapper, "around a Choice" do
+  class WrappedChoice < JBinData::Wrapper
     endian :big
     choice :choices => { 'a' => :uint8, 'b' => :uint16 }
   end
@@ -126,12 +126,12 @@ describe BinData::Wrapper, "around a Choice" do
   end
 end
 
-describe BinData::Wrapper, "inside a Record" do
-  class WrappedUint32le < BinData::Wrapper
+describe JBinData::Wrapper, "inside a Record" do
+  class WrappedUint32le < JBinData::Wrapper
     uint32le
   end
 
-  class RecordWithWrapped < BinData::Record
+  class RecordWithWrapped < JBinData::Record
     wrapped_uint32le :a, :onlyif => false, :value => 1
     wrapped_uint32le :b, :onlyif => true,  :value => 2
   end
@@ -142,14 +142,14 @@ describe BinData::Wrapper, "inside a Record" do
   end
 end
 
-describe BinData::Wrapper, "around a Record" do
-  class RecordToBeWrapped < BinData::Record
+describe JBinData::Wrapper, "around a Record" do
+  class RecordToBeWrapped < JBinData::Record
     default_parameter :arg => 3
     uint8 :a, :initial_value => :arg
     uint8 :b
   end
 
-  class WrappedRecord < BinData::Wrapper
+  class WrappedRecord < JBinData::Wrapper
     record_to_be_wrapped
   end
 
@@ -170,8 +170,8 @@ describe BinData::Wrapper, "around a Record" do
   end
 end
 
-describe BinData::Wrapper, "derived classes" do
-  class ParentDerivedWrapper < BinData::Wrapper
+describe JBinData::Wrapper, "derived classes" do
+  class ParentDerivedWrapper < JBinData::Wrapper
     uint32le
   end
 

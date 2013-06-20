@@ -1,9 +1,9 @@
 $:.unshift(File.join(File.dirname(__FILE__), 'lib'))
 
-require 'bindata'
+require 'jbindata'
 require 'rake/clean'
 
-CURRENT_VERSION = BinData::VERSION
+CURRENT_VERSION = JBinData::VERSION
 
 PKG_FILES = FileList[
   "[A-Z]*",

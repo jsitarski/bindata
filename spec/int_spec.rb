@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata'
+require 'jbindata'
 
 shared_examples "All Integers" do
 
@@ -144,11 +144,11 @@ shared_examples "All Integers" do
     endian_str = (endian == :little) ? "le" : "be"
 
     result = {}
-    result[BinData.const_get("#{base}8")] = 1
+    result[JBinData.const_get("#{base}8")] = 1
     (1 .. 20).each do |nbytes|
       nbits = nbytes * 8
       class_name = "#{base}#{nbits}#{endian_str}"
-      result[BinData.const_get(class_name)] = nbytes
+      result[JBinData.const_get(class_name)] = nbytes
     end
 
     result
@@ -198,19 +198,19 @@ end
 describe "Custom defined integers" do
   it "fail unless bits are a multiple of 8" do
     expect {
-      BinData::Uint7le
+     JBinData::Uint7le
     }.to raise_error
 
     expect {
-      BinData::Uint7be
+     JBinData::Uint7be
     }.to raise_error
 
     expect {
-      BinData::Int7le
+     JBinData::Int7le
     }.to raise_error
 
     expect {
-      BinData::Int7be
+     JBinData::Int7be
     }.to raise_error
   end
 end

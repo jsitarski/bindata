@@ -1,19 +1,19 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'bindata/version'
+require 'jbindata/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "jsitarski-bindata"
-  gem.version       = BinData::VERSION
+  gem.name          = "jbindata"
+  gem.version       = JBinData::VERSION
   gem.authors       = ["John-Paul Sitarski"]
   gem.email         = ["jsitarski@gmail.com"]
-  gem.description   = %q{BinData is a declarative way to read and write binary file formats.
+  gem.description   = %q{JBinData is a declarative way to read and write binary file formats.
 
 
   This means the programmer specifies *what* the format of the binary
 
-  data is, and BinData works out *how* to read and write data in this
+  data is, andJBinData works out *how* to read and write data in this
 
   format.  It is an easier ( and more readable ) alternative to
 

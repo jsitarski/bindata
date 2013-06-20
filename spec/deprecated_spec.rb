@@ -2,41 +2,30 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
 require File.expand_path(File.join(File.dirname(__FILE__), "example"))
-require 'bindata'
+require 'jbindata'
 
-describe BinData::SingleValue, "when defining" do
+describe JBinData::SingleValue, "when defining" do
   it "fails when inheriting from deprecated SingleValue" do
     expect {
-      class SubclassSingleValue < BinData::SingleValue
+      class SubclassSingleValue < JBinData::SingleValue
       end
     }.to raise_error
   end
 end
 
-describe BinData::MultiValue, "when defining" do
+describe JBinData::MultiValue, "when defining" do
   it "fails inheriting from deprecated MultiValue" do
     expect {
-      class SubclassMultiValue < BinData::MultiValue
+      class SubclassMultiValue < JBinData::MultiValue
       end
     }.to raise_error
   end
 end
 
-describe BinData::Base, "when defining" do
-  it "fails if #initialize is overridden" do
-    class BaseWithInitialize < BinData::Base
-      def initialize(params = {}, parent = nil)
-        super
-      end
-    end
-
-    expect {
-      BaseWithInitialize.new
-    }.to raise_error
-  end
+describe JBinData::Base, "when defining" do
 
   it "handles if #initialize is naively renamed to #initialize_instance" do
-    class BaseWithInitializeInstance < BinData::Base
+    class BaseWithInitializeInstance < JBinData::Base
       def initialize_instance(params = {}, parent = nil)
         super
       end
@@ -49,7 +38,7 @@ describe BinData::Base, "when defining" do
 
   it "handles deprecated #register_self method" do
     expect {
-      class DeprecatedRegisterSelfBase < BinData::Base
+      class DeprecatedRegisterSelfBase < JBinData::Base
         register_self
       end
     }.not_to raise_error
@@ -57,7 +46,7 @@ describe BinData::Base, "when defining" do
 
   it "handles deprecated #register method" do
     expect {
-      class DeprecatedRegisterBase < BinData::Base
+      class DeprecatedRegisterBase < JBinData::Base
         register(self.name, self)
       end
     }.not_to raise_error
@@ -65,7 +54,7 @@ describe BinData::Base, "when defining" do
 
   it "handles deprecated #register method for subclasses" do
     expect {
-      class DeprecatedSuperBase < BinData::Base
+      class DeprecatedSuperBase < JBinData::Base
         def self.inherited(subclass)
           register(subclass.name, subclass)                                                                                                                                      
         end                                                                                                                                                                      
@@ -78,15 +67,15 @@ describe BinData::Base, "when defining" do
 
   it "handles deprecated #register method with custom calling" do
     expect {
-      class DeprecatedCustomBase < BinData::Base
+      class DeprecatedCustomBase < JBinData::Base
         register(name, Object)
       end
     }.not_to raise_error
   end
 end
 
-describe BinData::Base do
-  class DeprecatedBase < BinData::Base
+describe JBinData::Base do
+  class DeprecatedBase < JBinData::Base
   end
 
   subject { DeprecatedBase.new }

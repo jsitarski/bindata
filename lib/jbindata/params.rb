@@ -1,12 +1,12 @@
-require 'bindata/lazy'
+require 'jbindata/lazy'
 
-module BinData
+module JBinData
   module AcceptedParametersMixin
     def self.included(base) #:nodoc:
       base.extend ClassMethods
     end
 
-    # Class methods to mix in to BinData::Base
+    # Class methods to mix in toJBinData::Base
     module ClassMethods
       # Mandatory parameters must be present when instantiating a data object.
       def mandatory_parameters(*args)
@@ -43,8 +43,8 @@ module BinData
       end
     end
 
-    # BinData objects accept parameters when initializing.  AcceptedParameters
-    # allow a BinData class to declaratively identify accepted parameters as
+    #JBinData objects accept parameters when initializing.  AcceptedParameters
+    # allow aJBinData class to declaratively identify accepted parameters as
     # mandatory, optional, default or mutually exclusive.
     class AcceptedParameters
 

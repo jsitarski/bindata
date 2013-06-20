@@ -1,6 +1,6 @@
-require 'bindata/base_primitive'
+require 'jbindata/base_primitive'
 
-module BinData
+module JBinData
   # Defines a number of classes that contain an integer.  The integer
   # is defined by endian, signedness and number of bytes.
 
@@ -8,15 +8,15 @@ module BinData
     class << self
       def define_class(nbits, endian, signed)
         name = class_name(nbits, endian, signed)
-        unless BinData.const_defined?(name)
-          BinData.module_eval <<-END
-            class #{name} < BinData::BasePrimitive
+        unless JBinData.const_defined?(name)
+          JBinData.module_eval <<-END
+            class #{name} < JBinData::BasePrimitive
               Int.define_methods(self, #{nbits}, :#{endian}, :#{signed})
             end
           END
         end
 
-        BinData.const_get(name)
+        JBinData.const_get(name)
       end
 
       def class_name(nbits, endian, signed)
@@ -147,12 +147,12 @@ module BinData
 
 
   # Unsigned 1 byte integer.
-  class Uint8 < BinData::BasePrimitive
+  class Uint8 < JBinData::BasePrimitive
     Int.define_methods(self, 8, :little, :unsigned)
   end
 
   # Signed 1 byte integer.
-  class Int8 < BinData::BasePrimitive
+  class Int8 < JBinData::BasePrimitive
     Int.define_methods(self, 8, :little, :signed)
   end
 

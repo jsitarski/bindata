@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata/bits'
+require 'jbindata/bits'
 
 describe "Bits of size 1" do
-  let(:bit_classes) { [BinData::Bit1, BinData::Bit1le] }
+  let(:bit_classes) { [JBinData::Bit1,JBinData::Bit1le] }
 
   it "accept true as value" do
     bit_classes.each do |bit_class|
@@ -122,7 +122,7 @@ def generate_bit_classes_to_test(endian)
   bits = {}
   (1 .. 50).each do |nbits|
     name = (endian == :big) ? "Bit#{nbits}" : "Bit#{nbits}le"
-    bit_class = BinData.const_get(name)
+    bit_class =JBinData.const_get(name)
     bits[bit_class] = nbits
   end
   bits

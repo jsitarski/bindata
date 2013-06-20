@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata/float'
+require 'jbindata/float'
 
 describe "A FloatLe" do
-  subject { BinData::FloatLe.new(Math::PI) }
+  subject {JBinData::FloatLe.new(Math::PI) }
 
   its(:num_bytes)               { should == 4 }
   its(:to_binary_s)             { should == [Math::PI].pack('e') }
@@ -12,7 +12,7 @@ describe "A FloatLe" do
 end
 
 describe "A FloatBe" do
-  subject { BinData::FloatBe.new(Math::PI) }
+  subject {JBinData::FloatBe.new(Math::PI) }
 
   its(:num_bytes)               { should == 4 }
   its(:to_binary_s)             { should == [Math::PI].pack('g') }
@@ -20,7 +20,7 @@ describe "A FloatBe" do
 end
 
 describe "A DoubleLe" do
-  subject { BinData::DoubleLe.new(Math::PI) }
+  subject {JBinData::DoubleLe.new(Math::PI) }
 
   its(:num_bytes)               { should == 8 }
   its(:to_binary_s)             { should == [Math::PI].pack('E') }
@@ -29,7 +29,7 @@ end
 
 
 describe "A DoubleBe" do
-  subject { BinData::DoubleBe.new(Math::PI) }
+  subject {JBinData::DoubleBe.new(Math::PI) }
 
   its(:num_bytes)               { should == 8 }
   its(:to_binary_s)             { should == [Math::PI].pack('G') }

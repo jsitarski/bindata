@@ -1,10 +1,10 @@
-require "bindata/base_primitive"
+require "jbindata/base_primitive"
 
-module BinData
+module JBinData
   # A String is a sequence of bytes.  This is the same as strings in Ruby 1.8.
   # The issue of character encoding is ignored by this class.
   #
-  #   require 'bindata'
+  #   require 'jbindata'
   #
   #   data = "abcdefghij"
   #
@@ -48,7 +48,7 @@ module BinData
   #                            return the value with all pad_bytes trimmed
   #                            from the end of the string.  The value will
   #                            not be trimmed when writing.
-  class String < BinData::BasePrimitive
+  class String < JBinData::BasePrimitive
 
     optional_parameters :read_length, :length, :trim_padding, :pad_front, :pad_left
     default_parameters  :pad_byte => "\0"

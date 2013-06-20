@@ -1,35 +1,35 @@
-require 'bindata/base'
+require 'jbindata/base'
 
-module BinData
-  # A BinData::BasePrimitive object is a container for a value that has a
+module JBinData
+  # AJBinData::BasePrimitive object is a container for a value that has a
   # particular binary representation.  A value corresponds to a primitive type
   # such as as integer, float or string.  Only one value can be contained by
   # this object.  This value can be read from or written to an IO stream.
   #
-  #   require 'bindata'
+  #   require 'jbindata'
   #
-  #   obj = BinData::Uint8.new(:initial_value => 42)
+  #   obj =JBinData::Uint8.new(:initial_value => 42)
   #   obj #=> 42
   #   obj.assign(5)
   #   obj #=> 5
   #   obj.clear
   #   obj #=> 42
   #
-  #   obj = BinData::Uint8.new(:value => 42)
+  #   obj =JBinData::Uint8.new(:value => 42)
   #   obj #=> 42
   #   obj.assign(5)
   #   obj #=> 42
   #
-  #   obj = BinData::Uint8.new(:check_value => 3)
-  #   obj.read("\005") #=> BinData::ValidityError: value is '5' but expected '3'
+  #   obj =JBinData::Uint8.new(:check_value => 3)
+  #   obj.read("\005") #=>JBinData::ValidityError: value is '5' but expected '3'
   #
-  #   obj = BinData::Uint8.new(:check_value => lambda { value < 5 })
-  #   obj.read("\007") #=> BinData::ValidityError: value not as expected
+  #   obj =JBinData::Uint8.new(:check_value => lambda { value < 5 })
+  #   obj.read("\007") #=>JBinData::ValidityError: value not as expected
   #
   # == Parameters
   #
   # Parameters may be provided at initialisation to control the behaviour of
-  # an object.  These params include those for BinData::Base as well as:
+  # an object.  These params include those forJBinData::Base as well as:
   #
   # [<tt>:initial_value</tt>] This is the initial value to use before one is
   #                           either #read or explicitly set with #value=.
@@ -44,7 +44,7 @@ module BinData
   #                           parameter.  A boolean return indicates success
   #                           or failure.  Any other return is compared to
   #                           the value just read in.
-  class BasePrimitive < BinData::Base
+  class BasePrimitive < JBinData::Base
     unregister_self
 
     optional_parameters :initial_value, :value, :check_value

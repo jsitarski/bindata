@@ -1,7 +1,7 @@
-require 'bindata/base'
-require 'bindata/dsl'
+require 'jbindata/base'
+require 'jbindata/dsl'
 
-module BinData
+module JBinData
   class SanitizedParameters < Hash
     def move_unknown_parameters_to(dest)
       unused_keys = keys - @the_class.accepted_parameters.all
@@ -11,12 +11,12 @@ module BinData
     end
   end
 
-  # A Wrapper allows the creation of new BinData types that
+  # A Wrapper allows the creation of newJBinData types that
   # provide default parameters.
   #
-  #   require 'bindata'
+  #   require 'jbindata'
   #
-  #   class Uint8Array < BinData::Wrapper
+  #   class Uint8Array <JBinData::Wrapper
   #     default_parameter :initial_element_value => 0
   #
   #     array :initial_length => 2 do
@@ -30,7 +30,7 @@ module BinData
   #   arr = Uint8Array.new(:initial_length => 5, :initial_element_value => 3)
   #   arr.snapshot #=> [3, 3, 3, 3 ,3]
   #   
-  class Wrapper < BinData::Base
+  class Wrapper < JBinData::Base
     include DSLMixin
 
     unregister_self
@@ -49,7 +49,7 @@ module BinData
         params[:wrapped] = params.create_sanitized_object_prototype(wrapped_type, wrapped_params)
 
         wrapped_class = params[:wrapped].instance_variable_get(:@obj_class)
-        warn "BinData::Wrapper is deprecated as of BinData 1.3.2.  #{self} should derive from #{wrapped_class}\n   See http://bindata.rubyforge.org/#extending_existing_types"
+        warn "JBinData::Wrapper is deprecated as ofJBinData 1.3.2.  #{self} should derive from #{wrapped_class}\n   See http://bindata.rubyforge.org/#extending_existing_types"
       end
     end
 
@@ -113,7 +113,7 @@ module BinData
 
       begin
         RegisteredClasses.lookup(self.class.fields[0].type, self.class.endian)
-      rescue BinData::UnRegisteredTypeError
+      rescue JBinData::UnRegisteredTypeError
         nil
       end
     end

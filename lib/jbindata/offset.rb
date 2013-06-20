@@ -1,4 +1,4 @@
-module BinData
+module JBinData
   # == Parameters
   #
   # Parameters may be provided at initialisation to control the behaviour of
@@ -39,7 +39,7 @@ module BinData
     #---------------
     private
 
-    # To be called from BinData::Base#initialize.
+    # To be called fromJBinData::Base#initialize.
     #
     # Monkey patches #do_read to check or adjust the stream offset
     # as appropriate.

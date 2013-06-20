@@ -1,6 +1,6 @@
-require 'bindata/base_primitive'
+require 'jbindata/base_primitive'
 
-module BinData
+module JBinData
   # Defines a number of classes that contain a floating point number.
   # The float is defined by precision and endian.
 
@@ -59,22 +59,22 @@ module BinData
 
 
   # Single precision floating point number in little endian format
-  class FloatLe < BinData::BasePrimitive
+  class FloatLe < JBinData::BasePrimitive
     FloatingPoint.define_methods(self, :single, :little)
   end
 
   # Single precision floating point number in big endian format
-  class FloatBe < BinData::BasePrimitive
+  class FloatBe < JBinData::BasePrimitive
     FloatingPoint.define_methods(self, :single, :big)
   end
 
   # Double precision floating point number in little endian format
-  class DoubleLe < BinData::BasePrimitive
+  class DoubleLe < JBinData::BasePrimitive
     FloatingPoint.define_methods(self, :double, :little)
   end
 
   # Double precision floating point number in big endian format
-  class DoubleBe < BinData::BasePrimitive
+  class DoubleBe < JBinData::BasePrimitive
     FloatingPoint.define_methods(self, :double, :big)
   end
 end

@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata'
+require 'jbindata'
 
-describe BinData::ResumeByteAlignment do
-  class ResumeAlignmentRecord < BinData::Record
+describe JBinData::ResumeByteAlignment do
+  class ResumeAlignmentRecord < JBinData::Record
     bit4 :a
     resume_byte_alignment
     bit4 :b
@@ -26,20 +26,20 @@ describe BinData::ResumeByteAlignment do
   end
 end
 
-describe BinData::BitAligned do
-  it "does not apply to BinData::Primitives" do
+describe JBinData::BitAligned do
+  it "does not apply toJBinData::Primitives" do
     expect {
-      class BitAlignedPrimitive < BinData::Primitive
+      class BitAlignedPrimitive < JBinData::Primitive
         bit_aligned
       end
     }.to raise_error
   end
 
-  class BitString < BinData::String
+  class BitString < JBinData::String
     bit_aligned
   end
 
-  class BitAlignedRecord < BinData::Record
+  class BitAlignedRecord < JBinData::Record
     bit4 :preamble
     bit_string :str, :length => 2
     bit4 :afterward

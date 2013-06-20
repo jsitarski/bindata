@@ -1,4 +1,4 @@
-require 'bindata'
+require 'jbindata'
 require 'forwardable'
 
 # An example of a reader / writer for the GZIP file format as per rfc1952.
@@ -9,14 +9,14 @@ class Gzip
   # Known compression methods
   DEFLATE = 8
 
-  class Extra < BinData::Record
+  class Extra < JBinData::Record
     endian :little
 
     uint16 :len,  :length => lambda { data.length }
     string :data, :read_length => :len
   end
 
-  class Header < BinData::Record
+  class Header < JBinData::Record
     endian :little
 
     uint16  :ident,      :value => 0x8b1f, :check_value => 0x8b1f
@@ -45,7 +45,7 @@ class Gzip
     uint16  :crc16,      :onlyif => lambda { fcrc16.nonzero? }
   end
 
-  class Footer < BinData::Record
+  class Footer < JBinData::Record
     endian :little
 
     uint32 :crc32

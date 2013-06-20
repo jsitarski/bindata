@@ -2,22 +2,22 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
 require File.expand_path(File.join(File.dirname(__FILE__), "example"))
-require 'bindata'
+require 'jbindata'
 
 describe "lambdas with index" do
-  class NestedLambdaWithIndex < BinData::Record
+  class NestedLambdaWithIndex < JBinData::Record
     uint8 :a, :value => lambda { index * 10 }
   end
 
   it "uses index of containing array" do
-    arr = BinData::Array.new(:type =>
+    arr =JBinData::Array.new(:type =>
                                [:uint8, { :value => lambda { index * 10 } }],
                              :initial_length => 3)
     arr.snapshot.should == [0, 10, 20]
   end
 
   it "uses index of nearest containing array" do
-    arr = BinData::Array.new(:type => :nested_lambda_with_index,
+    arr =JBinData::Array.new(:type => :nested_lambda_with_index,
                              :initial_length => 3)
     arr.snapshot.should == [{"a" => 0}, {"a" => 10}, {"a" => 20}]
   end
@@ -30,12 +30,12 @@ end
 
 describe "lambdas with parent" do
   it "accesses immediate parent when no parent is specified" do
-    class NestedLambdaWithoutParent < BinData::Record
+    class NestedLambdaWithoutParent < JBinData::Record
       int8 :a, :value => 5
       int8 :b, :value => lambda { a }
     end
 
-    class TestLambdaWithoutParent < BinData::Record
+    class TestLambdaWithoutParent < JBinData::Record
       int8   :a, :value => 3
       nested_lambda_without_parent :x
     end
@@ -45,12 +45,12 @@ describe "lambdas with parent" do
   end
 
   it "accesses parent's parent when parent is specified" do
-    class NestedLambdaWithParent < BinData::Record
+    class NestedLambdaWithParent < JBinData::Record
       int8 :a, :value => 5
       int8 :b, :value => lambda { parent.a }
     end
 
-    class TestLambdaWithParent < BinData::Record
+    class TestLambdaWithParent < JBinData::Record
       int8   :a, :value => 3
       nested_lambda_with_parent :x
     end
@@ -60,19 +60,19 @@ describe "lambdas with parent" do
   end
 end
 
-describe BinData::Record, "with choice field" do
-  class TupleRecord < BinData::Record
+describe JBinData::Record, "with choice field" do
+  class TupleRecord < JBinData::Record
     uint8 :a, :value => 3
     uint8 :b, :value => 5
   end
 
-  class RecordWithChoiceField < BinData::Record
+  class RecordWithChoiceField < JBinData::Record
     choice :x, :selection => 0 do
       tuple_record
     end
   end
 
-  class RecordWithNestedChoiceField < BinData::Record
+  class RecordWithNestedChoiceField < JBinData::Record
     uint8  :sel, :value => 0
     choice :x, :selection => 0 do
       choice :selection => :sel do
@@ -99,8 +99,8 @@ describe BinData::Record, "with choice field" do
   end
 end
 
-describe BinData::Array, "of bits" do
-  let(:data) { BinData::Array.new(:type => :bit1, :initial_length => 15) }
+describe JBinData::Array, "of bits" do
+  let(:data) {JBinData::Array.new(:type => :bit1, :initial_length => 15) }
 
   it "reads" do
     str = [0b0001_0100, 0b1000_1000].pack("CC")
@@ -137,8 +137,8 @@ describe BinData::Array, "of bits" do
   end
 end
 
-describe BinData::Record, "containing bitfields" do
-  class BCD < BinData::Primitive
+describe JBinData::Record, "containing bitfields" do
+  class BCD < JBinData::Primitive
     bit4 :d1
     bit4 :d2
     bit4 :d3
@@ -154,7 +154,7 @@ describe BinData::Record, "containing bitfields" do
     end
   end
 
-  class BitfieldRecord < BinData::Record
+  class BitfieldRecord < JBinData::Record
     struct :a do
       bit4 :w
     end
@@ -203,42 +203,42 @@ describe "Objects with debug_name" do
   end
 
   it "includes array index" do
-    arr = BinData::Array.new(:type => :example_single, :initial_length => 2)
+    arr =JBinData::Array.new(:type => :example_single, :initial_length => 2)
     arr[2].debug_name.should == "obj[2]"
   end
 
   it "includes field name" do
-    s = BinData::Struct.new(:fields => [[:example_single, :a]])
+    s =JBinData::Struct.new(:fields => [[:example_single, :a]])
     s.a.debug_name.should == "obj.a"
   end
 
   it "delegates to choice" do
     choice_params = {:choices => [:example_single], :selection => 0}
-    s = BinData::Struct.new(:fields => [[:choice, :a, choice_params]])
+    s =JBinData::Struct.new(:fields => [[:choice, :a, choice_params]])
     s.a.debug_name.should == "obj.a"
   end
 
   it "nests" do
     nested_struct_params = {:fields => [[:example_single, :c]]}
     struct_params = {:fields => [[:struct, :b, nested_struct_params]]}
-    s = BinData::Struct.new(:fields => [[:struct, :a, struct_params]])
+    s =JBinData::Struct.new(:fields => [[:struct, :a, struct_params]])
     s.a.b.c.debug_name.should == "obj.a.b.c"
   end
 end
 
 describe "Tracing"  do
   it "should trace arrays" do
-    arr = BinData::Array.new(:type => :int8, :initial_length => 5)
+    arr =JBinData::Array.new(:type => :int8, :initial_length => 5)
 
     io = StringIO.new
-    BinData::trace_reading(io) { arr.read("\x01\x02\x03\x04\x05") }
+   JBinData::trace_reading(io) { arr.read("\x01\x02\x03\x04\x05") }
 
     expected = (0..4).collect { |i| "obj[#{i}] => #{i + 1}\n" }.join("")
     io.value.should == expected
   end
 
   it "traces custom single values" do
-    class DebugNamePrimitive < BinData::Primitive
+    class DebugNamePrimitive < JBinData::Primitive
       int8 :ex
       def get;     self.ex; end
       def set(val) self.ex = val; end
@@ -247,32 +247,32 @@ describe "Tracing"  do
     subject = DebugNamePrimitive.new
 
     io = StringIO.new
-    BinData::trace_reading(io) { subject.read("\x01") }
+   JBinData::trace_reading(io) { subject.read("\x01") }
 
     io.value.should == ["obj-internal-.ex => 1\n", "obj => 1\n"].join("")
   end
 
   it "traces choice selection" do
-    subject = BinData::Choice.new(:choices => [:int8, :int16be], :selection => 0)
+    subject =JBinData::Choice.new(:choices => [:int8, :int16be], :selection => 0)
 
     io = StringIO.new
-    BinData::trace_reading(io) { subject.read("\x01") }
+   JBinData::trace_reading(io) { subject.read("\x01") }
 
     io.value.should == ["obj-selection- => 0\n", "obj => 1\n"].join("")
   end
 
   it "trims long trace values" do
-    subject = BinData::String.new(:read_length => 40)
+    subject =JBinData::String.new(:read_length => 40)
 
     io = StringIO.new
-    BinData::trace_reading(io) { subject.read("0000000000111111111122222222223333333333") }
+   JBinData::trace_reading(io) { subject.read("0000000000111111111122222222223333333333") }
 
     io.value.should == "obj => \"000000000011111111112222222222...\n"
   end
 end
 
 describe "Forward referencing with Primitive" do
-  class FRPrimitive < BinData::Record
+  class FRPrimitive < JBinData::Record
     uint8  :len, :value => lambda { data.length }
     string :data, :read_length => :len
   end
@@ -295,7 +295,7 @@ describe "Forward referencing with Primitive" do
 end
 
 describe "Forward referencing with Array" do
-  class FRArray < BinData::Record
+  class FRArray < JBinData::Record
     uint8  :len, :value => lambda { data.length }
     array :data, :type => :uint8, :initial_length => :len
   end
@@ -318,7 +318,7 @@ describe "Forward referencing with Array" do
 end
 
 describe "Evaluating custom parameters" do
-  class CustomParameterRecord < BinData::Record
+  class CustomParameterRecord < JBinData::Record
     mandatory_parameter :zz
 
     uint8 :a, :value => :zz
@@ -332,8 +332,8 @@ describe "Evaluating custom parameters" do
   end
 end
 
-describe BinData::Record, "with custom sized integers" do
-  class CustomIntRecord < BinData::Record
+describe JBinData::Record, "with custom sized integers" do
+  class CustomIntRecord < JBinData::Record
     int40be :a
   end
 
@@ -343,8 +343,8 @@ describe BinData::Record, "with custom sized integers" do
   end
 end
 
-describe BinData::Record, "with choice field" do
-  class ChoiceFieldRecord < BinData::Record
+describe JBinData::Record, "with choice field" do
+  class ChoiceFieldRecord < JBinData::Record
     int8 :a
     choice :b, :selection => :a do
       struct 1, :fields => [[:int8, :v]]
@@ -352,14 +352,14 @@ describe BinData::Record, "with choice field" do
   end
 
   it "assigns" do
-    subject = BinData::Array.new(:type => :choice_field_record)
+    subject =JBinData::Array.new(:type => :choice_field_record)
     obj = ChoiceFieldRecord.new(:a => 1, :b => {:v => 3})
     subject.assign([obj])
   end
 end
 
-describe BinData::Primitive, "representing a string" do
-  class PascalStringPrimitive < BinData::Primitive
+describe JBinData::Primitive, "representing a string" do
+  class PascalStringPrimitive < JBinData::Primitive
     uint8  :len,  :value => lambda { data.length }
     string :data, :read_length => :len
 

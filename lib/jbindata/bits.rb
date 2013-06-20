@@ -1,6 +1,6 @@
-require 'bindata/base_primitive'
+require 'jbindata/base_primitive'
 
-module BinData
+module JBinData
   # Defines a number of classes that contain a bit based integer.
   # The integer is defined by endian and number of bits.
 
@@ -9,15 +9,15 @@ module BinData
       def define_class(nbits, endian)
         name = "Bit#{nbits}"
         name += "le" if endian == :little
-        unless BinData.const_defined?(name)
-          BinData.module_eval <<-END
-            class #{name} < BinData::BasePrimitive
+        unless JBinData.const_defined?(name)
+          JBinData.module_eval <<-END
+            class #{name} < JBinData::BasePrimitive
               BitField.define_methods(self, #{nbits}, :#{endian})
             end
           END
         end
 
-        BinData.const_get(name)
+        JBinData.const_get(name)
       end
 
       def define_methods(bit_class, nbits, endian)

@@ -1,8 +1,8 @@
 require 'stringio'
 
-module BinData
+module JBinData
   # A wrapper around an IO object.  The wrapper provides a consistent
-  # interface for BinData objects to use when accessing the IO.
+  # interface forJBinData objects to use when accessing the IO.
   class IO
 
     # Creates a StringIO around +str+.
@@ -31,11 +31,11 @@ module BinData
     #   readbits(6), readbits(5) #=> [543210, a9876]
     #
     def initialize(io)
-      raise ArgumentError, "io must not be a BinData::IO" if BinData::IO === io
+      raise ArgumentError, "io must not be a JBinData::IO" if JBinData::IO === io
 
       # wrap strings in a StringIO
       if io.respond_to?(:to_str)
-        io = BinData::IO.create_string_io(io.to_str)
+        io = JBinData::IO.create_string_io(io.to_str)
       end
 
       @raw_io = io

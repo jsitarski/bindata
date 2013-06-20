@@ -15,7 +15,7 @@ unless Object.respond_to? :instance_exec
   end
 end
 
-module BinData
+module JBinData
   class Base
 
     #alias_method :initialize_without_deprecation, :initialize

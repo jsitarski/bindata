@@ -1,9 +1,9 @@
-module BinData
+module JBinData
   # A LazyEvaluator is bound to a data object.  The evaluator will evaluate
   # lambdas in the context of this data object.  These lambdas
   # are those that are passed to data objects as parameters, e.g.:
   #
-  #    BinData::String.new(:value => lambda { %w{a test message}.join(" ") })
+  #   JBinData::String.new(:value => lambda { %w{a test message}.join(" ") })
   #
   # As a shortcut, :foo is the equivalent of lambda { foo }.
   #

@@ -2,14 +2,14 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
 require File.expand_path(File.join(File.dirname(__FILE__), "example"))
-require 'bindata/choice'
-require 'bindata/int'
+require 'jbindata/choice'
+require 'jbindata/int'
 
 class Chooser
   attr_accessor :choice
 end
 
-class BinData::Choice
+class JBinData::Choice
   def set_chooser(chooser)
     @chooser = chooser
   end
@@ -21,41 +21,41 @@ end
 def create_choice(choices, options = {})
   chooser = Chooser.new
   params = {:choices => choices, :selection => lambda { chooser.choice } }.merge(options)
-  choice = BinData::Choice.new(params)
+  choice =JBinData::Choice.new(params)
   choice.set_chooser(chooser)
   choice
 end
 
-describe BinData::Choice, "when instantiating" do
+describe JBinData::Choice, "when instantiating" do
   it "ensures mandatory parameters are supplied" do
     args = {}
-    expect { BinData::Choice.new(args) }.to raise_error(ArgumentError)
+    expect {JBinData::Choice.new(args) }.to raise_error(ArgumentError)
 
     args = {:selection => 1}
-    expect { BinData::Choice.new(args) }.to raise_error(ArgumentError)
+    expect {JBinData::Choice.new(args) }.to raise_error(ArgumentError)
 
     args = {:choices => []}
-    expect { BinData::Choice.new(args) }.to raise_error(ArgumentError)
+    expect {JBinData::Choice.new(args) }.to raise_error(ArgumentError)
   end
 
   it "fails when a given type is unknown" do
     args = {:choices => [:does_not_exist], :selection => 0}
-    expect { BinData::Choice.new(args) }.to raise_error(BinData::UnRegisteredTypeError)
+    expect {JBinData::Choice.new(args) }.to raise_error(JBinData::UnRegisteredTypeError)
   end
 
   it "fails when a given type is unknown" do
     args = {:choices => {0 => :does_not_exist}, :selection => 0}
-    expect { BinData::Choice.new(args) }.to raise_error(BinData::UnRegisteredTypeError)
+    expect {JBinData::Choice.new(args) }.to raise_error(JBinData::UnRegisteredTypeError)
   end
 
   it "fails when :choices Hash has a symbol as key" do
     args = {:choices => {:a => :example_single}, :selection => 0}
-    expect { BinData::Choice.new(args) }.to raise_error(ArgumentError)
+    expect {JBinData::Choice.new(args) }.to raise_error(ArgumentError)
   end
 
   it "fails when :choices Hash has a nil key" do
     args = {:choices => {nil => :example_single}, :selection => 0}
-    expect { BinData::Choice.new(args) }.to raise_error(ArgumentError)
+    expect {JBinData::Choice.new(args) }.to raise_error(ArgumentError)
   end
 end
 
@@ -110,7 +110,7 @@ shared_examples "Choice initialized with array or hash" do
   end
 end
 
-describe BinData::Choice, "with sparse choices array" do
+describe JBinData::Choice, "with sparse choices array" do
   include_examples "Choice initialized with array or hash"
 
   subject {
@@ -122,7 +122,7 @@ describe BinData::Choice, "with sparse choices array" do
   }
 end
 
-describe BinData::Choice, "with choices hash" do
+describe JBinData::Choice, "with choices hash" do
   include_examples "Choice initialized with array or hash"
 
   subject {
@@ -133,7 +133,7 @@ describe BinData::Choice, "with choices hash" do
   }
 end
 
-describe BinData::Choice, "with single values" do
+describe JBinData::Choice, "with single values" do
   subject {
     choices = {3 => :example_single,
                5 => :example_single,
@@ -193,7 +193,7 @@ describe BinData::Choice, "with single values" do
   end
 end
 
-describe BinData::Choice, "with copy_on_change => true" do
+describe JBinData::Choice, "with copy_on_change => true" do
   subject {
     choices = {3 => :example_single,
                5 => :example_single,
@@ -210,22 +210,22 @@ describe BinData::Choice, "with copy_on_change => true" do
   end
 end
 
-describe BinData::Choice, "with :default" do
+describe JBinData::Choice, "with :default" do
   let(:choices) { { "a" => :int8, :default => :int16be } }
 
   it "selects for existing case" do
-    subject = BinData::Choice.new(:selection => "a", :choices => choices)
+    subject =JBinData::Choice.new(:selection => "a", :choices => choices)
     subject.num_bytes.should == 1
   end
 
   it "selects for default case" do
-    subject = BinData::Choice.new(:selection => "other", :choices => choices)
+    subject =JBinData::Choice.new(:selection => "other", :choices => choices)
     subject.num_bytes.should == 2
   end
 end
 
-describe BinData::Choice, "subclassed with default parameters" do
-  class DerivedChoice < BinData::Choice
+describe JBinData::Choice, "subclassed with default parameters" do
+  class DerivedChoice < JBinData::Choice
     endian :big
     default_parameter :selection => 'a'
 

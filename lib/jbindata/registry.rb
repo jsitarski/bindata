@@ -1,4 +1,4 @@
-module BinData
+module JBinData
 
   class UnRegisteredTypeError < StandardError ; end
 
@@ -72,7 +72,7 @@ module BinData
       if /^u?int\d+(le|be)$/ =~ key or /^bit\d+(le)?$/ =~ key
         class_name = key.gsub(/(?:^|_)(.)/) { $1.upcase }
         begin
-          register(key, BinData::const_get(class_name))
+          register(key,JBinData::const_get(class_name))
         rescue NameError
         end
       end

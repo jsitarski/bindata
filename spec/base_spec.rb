@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata/base'
+require 'jbindata/base'
 
-class BaseStub < BinData::Base
+class BaseStub < JBinData::Base
   # Override to avoid NotImplemented errors
   def clear; end
   def clear?; end
@@ -14,8 +14,8 @@ class BaseStub < BinData::Base
   def do_num_bytes; end
 end
 
-describe BinData::Base, "all subclasses" do
-  class SubClassOfBase < BinData::Base
+describe JBinData::Base, "all subclasses" do
+  class SubClassOfBase < JBinData::Base
     expose_methods_for_testing
   end
 
@@ -32,10 +32,10 @@ describe BinData::Base, "all subclasses" do
   end
 end
 
-describe BinData::Base, "with parameters" do
+describe JBinData::Base, "with parameters" do
   it "raises error when parameter name is invalid" do
     expect {
-      class InvalidParameterNameBase < BinData::Base
+      class InvalidParameterNameBase < JBinData::Base
         optional_parameter :eval # i.e. Kernel#eval
       end
     }.to raise_error(NameError)
@@ -51,7 +51,7 @@ describe BinData::Base, "with parameters" do
   end
 end
 
-describe BinData::Base, "with mandatory parameters" do
+describe JBinData::Base, "with mandatory parameters" do
   class MandatoryBase < BaseStub
     mandatory_parameter :p1
     mandatory_parameter :p2
@@ -72,7 +72,7 @@ describe BinData::Base, "with mandatory parameters" do
   end
 end
 
-describe BinData::Base, "with default parameters" do
+describe JBinData::Base, "with default parameters" do
   class DefaultBase < BaseStub
     default_parameter :p1 => "a"
   end
@@ -88,7 +88,7 @@ describe BinData::Base, "with default parameters" do
   end
 end
 
-describe BinData::Base, "with mutually exclusive parameters" do
+describe JBinData::Base, "with mutually exclusive parameters" do
   class MutexParamBase < BaseStub
     optional_parameters :p1, :p2
     mutually_exclusive_parameters :p1, :p2
@@ -108,7 +108,7 @@ describe BinData::Base, "with mutually exclusive parameters" do
   end
 end
 
-describe BinData::Base, "with multiple parameters" do
+describe JBinData::Base, "with multiple parameters" do
   class WithParamBase < BaseStub
     mandatory_parameter :p1
     default_parameter   :p2 => 2
@@ -152,7 +152,7 @@ describe BinData::Base, "with multiple parameters" do
   end
 end
 
-describe BinData::Base, "when initializing" do
+describe JBinData::Base, "when initializing" do
   class BaseInit < BaseStub
     class << self
       attr_accessor :calls
@@ -199,7 +199,7 @@ describe BinData::Base, "when initializing" do
         obj = subject.new
         expect {
           obj.read("abc")
-        }.to raise_error(BinData::ValidityError)
+        }.to raise_error(JBinData::ValidityError)
       end
 
       it "assigns value" do
@@ -215,7 +215,7 @@ describe BinData::Base, "when initializing" do
   end
 end
 
-describe BinData::Base, "as black box" do
+describe JBinData::Base, "as black box" do
   context "class methods" do
     it "returns bindata_name" do
       BaseStub.bindata_name.should == "base_stub"
@@ -276,7 +276,7 @@ describe BinData::Base, "as black box" do
   end
 end
 
-describe BinData::Base, "as white box" do
+describe JBinData::Base, "as white box" do
   subject { BaseStub.new }
 
   it "forwards read to do_read" do
@@ -301,7 +301,7 @@ describe BinData::Base, "as white box" do
   end
 end
 
-describe BinData::Base, "checking offsets" do
+describe JBinData::Base, "checking offsets" do
   class TenByteOffsetBase < BaseStub
     def self.create(params)
       obj = self.new
@@ -325,7 +325,7 @@ describe BinData::Base, "checking offsets" do
     it "fails when offset is incorrect" do
       io.seek(2)
       subject = TenByteOffsetBase.create(:check_offset => 8)
-      expect { subject.read(io) }.to raise_error(BinData::ValidityError)
+      expect { subject.read(io) }.to raise_error(JBinData::ValidityError)
     end
 
     it "succeeds when offset is correct" do
@@ -337,7 +337,7 @@ describe BinData::Base, "checking offsets" do
     it "fails when :check_offset fails" do
       io.seek(4)
       subject = TenByteOffsetBase.create(:check_offset => lambda { offset == 11 } )
-      expect { subject.read(io) }.to raise_error(BinData::ValidityError)
+      expect { subject.read(io) }.to raise_error(JBinData::ValidityError)
     end
 
     it "succeeds when :check_offset succeeds" do
@@ -370,7 +370,7 @@ describe BinData::Base, "checking offsets" do
     it "fails if cannot adjust offset" do
       io.seek(4)
       subject = TenByteOffsetBase.create(:adjust_offset => -5)
-      expect { subject.read(io) }.to raise_error(BinData::ValidityError)
+      expect { subject.read(io) }.to raise_error(JBinData::ValidityError)
     end
   end
 end

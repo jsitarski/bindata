@@ -1,8 +1,8 @@
-require 'bindata/dsl'
-require 'bindata/sanitize'
-require 'bindata/struct'
+require 'jbindata/dsl'
+require 'jbindata/sanitize'
+require 'jbindata/struct'
 
-module BinData
+module JBinData
   # Extracts args for Records.
   #
   # Foo.new(:bar => "baz) is ambiguous as to whether :bar is a value or parameter.
@@ -41,9 +41,9 @@ module BinData
 
   # A Record is a declarative wrapper around Struct.
   #
-  #    require 'bindata'
+  #    require 'jbindata'
   #
-  #    class SomeDataType < BinData::Record
+  #    class SomeDataType <JBinData::Record
   #      hide :a
   #
   #      int32le :a
@@ -59,7 +59,7 @@ module BinData
   #    obj.field_names   =># ["b", "s"]
   #    obj.s.field_names =># ["x", "y", "z"]
   #
-  class Record < BinData::Struct
+  class Record < JBinData::Struct
     include DSLMixin
 
     unregister_self

@@ -1,19 +1,19 @@
-require 'bindata/base_primitive'
-require 'bindata/dsl'
-require 'bindata/struct'
+require 'jbindata/base_primitive'
+require 'jbindata/dsl'
+require 'jbindata/struct'
 
-module BinData
-  # A Primitive is a declarative way to define a new BinData data type.
+module JBinData
+  # A Primitive is a declarative way to define a newJBinData data type.
   # The data type must contain a primitive value only, i.e numbers or strings.
-  # For new data types that contain multiple values see BinData::Record.
+  # For new data types that contain multiple values seeJBinData::Record.
   #
   # To define a new data type, set fields as if for Record and add a
   # #get and #set method to extract / convert the data between the fields
   # and the #value of the object.
   #
-  #    require 'bindata'
+  #    require 'jbindata'
   #
-  #    class PascalString < BinData::Primitive
+  #    class PascalString <JBinData::Primitive
   #      uint8  :len,  :value => lambda { data.length }
   #      string :data, :read_length => :len
   #    
@@ -32,7 +32,7 @@ module BinData
   #    ps #=> "abc"
   #
   #    # Unsigned 24 bit big endian integer
-  #    class Uint24be < BinData::Primitive
+  #    class Uint24be <JBinData::Primitive
   #      uint8 :byte1
   #      uint8 :byte2
   #      uint8 :byte3
@@ -57,7 +57,7 @@ module BinData
   #
   # == Parameters
   #
-  # Primitive objects accept all the parameters that BinData::BasePrimitive do.
+  # Primitive objects accept all the parameters thatJBinData::BasePrimitive do.
   #
   class Primitive < BasePrimitive
     include DSLMixin
@@ -67,14 +67,14 @@ module BinData
 
     class << self
       def sanitize_parameters!(params) #:nodoc:
-        params[:struct_params] = params.create_sanitized_params(dsl_params, BinData::Struct)
+        params[:struct_params] = params.create_sanitized_params(dsl_params, JBinData::Struct)
       end
     end
 
     mandatory_parameter :struct_params
 
     def initialize_instance
-      @struct = BinData::Struct.new(get_parameter(:struct_params), self)
+      @struct = JBinData::Struct.new(get_parameter(:struct_params), self)
     end
 
     def respond_to?(symbol, include_private = false) #:nodoc:

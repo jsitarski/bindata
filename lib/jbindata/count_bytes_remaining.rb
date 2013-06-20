@@ -1,13 +1,13 @@
-require "bindata/base_primitive"
+require "jbindata/base_primitive"
 
-module BinData
+module JBinData
   # Counts the number of bytes remaining in the input stream from the current
   # position to the end of the stream.  This only makes sense for seekable
   # streams.
   #
-  #   require 'bindata'
+  #   require 'jbindata'
   #
-  #   class A < BinData::Record
+  #   class A <JBinData::Record
   #     count_bytes_remaining :bytes_remaining
   #     string :all_data, :read_length => :bytes_remaining
   #   end
@@ -15,7 +15,7 @@ module BinData
   #   obj = A.read("abcdefghij")
   #   obj.all_data #=> "abcdefghij"
   #
-  class CountBytesRemaining < BinData::BasePrimitive
+  class CountBytesRemaining < JBinData::BasePrimitive
 
     #---------------
     private

@@ -1,4 +1,4 @@
-= What is BinData?
+= What isJBinData?
 
 Do you ever find yourself writing code like this?
 
@@ -10,9 +10,9 @@ Do you ever find yourself writing code like this?
 
 It’s ugly, violates DRY and feels like you’re writing Perl, not Ruby.
 
-There is a better way. Here’s how you’d write the above using BinData.
+There is a better way. Here’s how you’d write the above usingJBinData.
 
-  class Rectangle < BinData::Record
+  class Rectangle < JBinData::Record
     endian :little
     uint16 :len
     string :name, :read_length => :len
@@ -23,8 +23,7 @@ There is a better way. Here’s how you’d write the above using BinData.
   io = File.open(...)
   r  = Rectangle.read(io)
   puts "Rectangle #{r.name} is #{r.width} x #{r.height}"
-
-BinData makes it easy to create new data types. It supports all the common
+JBinData makes it easy to create new data types. It supports all the common
 primitive datatypes that are found in structured binary data formats. Support
 for dependent and variable length fields is built in. 
 

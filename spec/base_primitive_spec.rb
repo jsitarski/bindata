@@ -2,19 +2,19 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
 require File.expand_path(File.join(File.dirname(__FILE__), "example"))
-require 'bindata/base_primitive'
-require 'bindata/io'
+require 'jbindata/base_primitive'
+require 'jbindata/io'
 
-describe BinData::BasePrimitive do
+describe JBinData::BasePrimitive do
   it "is not registered" do
     expect {
-      BinData::RegisteredClasses.lookup("BasePrimitive")
-    }.to raise_error(BinData::UnRegisteredTypeError)
+     JBinData::RegisteredClasses.lookup("BasePrimitive")
+    }.to raise_error(JBinData::UnRegisteredTypeError)
   end
 end
 
-describe BinData::BasePrimitive, "all subclasses" do
-  class SubClassOfBasePrimitive < BinData::BasePrimitive
+describe JBinData::BasePrimitive, "all subclasses" do
+  class SubClassOfBasePrimitive < JBinData::BasePrimitive
     expose_methods_for_testing
   end
 
@@ -27,7 +27,7 @@ describe BinData::BasePrimitive, "all subclasses" do
   end
 end
 
-describe BinData::BasePrimitive do
+describe JBinData::BasePrimitive do
   it "conforms to rule 1 for returning a value" do
     data = ExampleSingle.new(:value => 5)
     data.should == 5
@@ -81,7 +81,7 @@ describe ExampleSingle do
     subject.should == 7
   end
 
-  it "sets and retrieves BinData::BasePrimitives" do
+  it "sets and retrievesJBinData::BasePrimitives" do
     subject.assign(ExampleSingle.new(7))
     subject.should == 7
   end
@@ -123,7 +123,7 @@ describe ExampleSingle do
   end
 end
 
-describe BinData::BasePrimitive, "after initialisation" do
+describe JBinData::BasePrimitive, "after initialisation" do
   subject { ExampleSingle.new }
 
   it "does not allow both :initial_value and :value" do
@@ -163,7 +163,7 @@ describe BinData::BasePrimitive, "after initialisation" do
   end
 end
 
-describe BinData::BasePrimitive, "with :initial_value" do
+describe JBinData::BasePrimitive, "with :initial_value" do
   subject { ExampleSingle.new(:initial_value => 5) }
 
   its(:value) { should == 5 }
@@ -185,7 +185,7 @@ describe BinData::BasePrimitive, "with :initial_value" do
   end
 end
 
-describe BinData::BasePrimitive, "with :value" do
+describe JBinData::BasePrimitive, "with :value" do
   subject { ExampleSingle.new(:value => 5) }
 
   its(:value) { should == 5 }
@@ -209,7 +209,7 @@ describe BinData::BasePrimitive, "with :value" do
   end
 end
 
-describe BinData::BasePrimitive, "checking read value" do
+describe JBinData::BasePrimitive, "checking read value" do
   let(:io) { ExampleSingle.io_with_value(12) }
 
   context ":check_value is non boolean" do
@@ -220,7 +220,7 @@ describe BinData::BasePrimitive, "checking read value" do
 
     it "fails when check_value is incorrect" do
       data = ExampleSingle.new(:check_value => lambda { 99 })
-      expect { data.read(io) }.to raise_error(BinData::ValidityError)
+      expect { data.read(io) }.to raise_error(JBinData::ValidityError)
     end
   end
 
@@ -232,7 +232,7 @@ describe BinData::BasePrimitive, "checking read value" do
 
     it "fails when check_value is false" do
       data = ExampleSingle.new(:check_value => lambda { value > 20 })
-      expect { data.read(io) }.to raise_error(BinData::ValidityError)
+      expect { data.read(io) }.to raise_error(JBinData::ValidityError)
     end
   end
 end

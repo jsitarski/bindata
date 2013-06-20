@@ -2,20 +2,18 @@
 
 == Deprecations
 
-The BinData::String parameter :pad_char has been renamed to :pad_byte.  This
+TheJBinData::String parameter :pad_char has been renamed to :pad_byte.  This
 aids readibilty as Ruby 1.9 characters are not necessarily one byte.
 
 = 1.4.0
 
 == Deprecations
 
-There is no longer any need to call #register_self when inheriting from
-BinData::Base.
-
-BinData::Wrapper is deprecated.  You should use direct inheritance instead.
+There is no longer any need to call #register_self when inheriting fromJBinData::Base.
+JBinData::Wrapper is deprecated.  You should use direct inheritance instead.
 
 If your code looks like:
-    class Uint8Array < BinData::Wrapper
+    class Uint8Array < JBinData::Wrapper
       default_parameter :initial_element_value => 0
   
       array :initial_length => 2 do
@@ -24,7 +22,7 @@ If your code looks like:
     end
 
 It should be changed to:
-    class Uint8Array < BinData::Array
+    class Uint8Array < JBinData::Array
       default_parameter :initial_element_value => 0
       default_parameter :initial_length => 2
   
@@ -37,32 +35,32 @@ See http://bindata.rubyforge.org/#extending_existing_types for details.
 
 == New features
 
-You can now assign values to BinData objects when instantiating them.
+You can now assign values toJBinData objects when instantiating them.
 
 Previously:
-    obj = BinData::Stringz.new(:max_length => 10)
+    obj =JBinData::Stringz.new(:max_length => 10)
     obj.assign("abc")
 
 Now:
-    obj = BinData::Stringz.new("abc", :max_length => 10)
+    obj =JBinData::Stringz.new("abc", :max_length => 10)
 
 == Backwards incompatible changes
 
 This version makes some backwards incompatible changes for more advanced
-users of BinData.
+users ofJBinData.
 
 This only affects you if you have created your own custom types by
-subclassing BinData::Base or BinData::BasePrimitive.
+subclassingJBinData::Base orJBinData::BasePrimitive.
 
 All instance variables must now be initialized in #initialize_instance.
 Implementing #initialize is no longer allowed.
 
-Run your existing code in $VERBOSE mode ("ruby -w"), and BinData will
+Run your existing code in $VERBOSE mode ("ruby -w"), andJBinData will
 inform you of any changes you need to make to your code.
 
 If your code previously looked like:
 
-    class MyType < BinData::Base
+    class MyType < JBinData::Base
       register_self
 
       def initialize(parameters = {}, parent = nil)
@@ -76,7 +74,7 @@ If your code previously looked like:
 
 You must change it to look like:
 
-    class MyType < BinData::Base
+    class MyType < JBinData::Base
       register_self
 
       def initialize_instance
@@ -90,7 +88,7 @@ You must change it to look like:
 
 Version 1.0.0 removes all deprecated features.  If you are upgrading from a
 version prior to 0.10.0 you will need to make changes to your code before it
-will work with BinData 1.0.0 or later.
+will work withJBinData 1.0.0 or later.
 
 It is recommended to first upgrade to 0.11.1, and run your code with the -w
 command line switch.  This will turn on warning messages that should give you
@@ -104,7 +102,7 @@ There are several new features in this release.  The major ones are:
 * Debugging declarations is now easier with the ability to trace values when
   reading.
 
-      BinData::trace_reading(STDERR) do
+     JBinData::trace_reading(STDERR) do
         obj_not_quite_working_correctly.read(io)
       end
 
@@ -112,8 +110,8 @@ There are several new features in this release.  The major ones are:
 
 * Support for arbitrary sized integers and bit fields.
 
-* Struct/Array field/element access now returns a BinData object, rather than
-  the underlying Fixnum or String.  The BinData object will behave like it's
+* Struct/Array field/element access now returns aJBinData object, rather than
+  the underlying Fixnum or String.  TheJBinData object will behave like it's
   underlying primitive so existing code should continue to work.  This allows
   for an improved syntax in your declarations.
 
@@ -135,9 +133,9 @@ regarding these deprecations.
 Code using these deprecated features will still work in this release but will
 fail to work in some future release.  Change your code now.
 
-* BinData::SingleValue has been renamed to BinData::Primitive.
+*JBinData::SingleValue has been renamed toJBinData::Primitive.
 
-* BinData::MultiValue has been renamed to BinData::Record.
+*JBinData::MultiValue has been renamed toJBinData::Record.
 
 * String :trim_value parameter has been renamed to :trim_padding.
 

@@ -1,6 +1,6 @@
 require "bindata/base_primitive"
 
-module BinData
+module JBinData
   # Skip will skip over bytes from the input stream.  If the stream is not
   # seekable, then the bytes are consumed and discarded.
   #

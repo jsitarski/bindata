@@ -1,8 +1,8 @@
-Title: BinData Reference Manual
+Title:JBinData Reference Manual
 
 {:ruby: lang=ruby html_use_syntax=true}
 
-# BinData - Parsing Binary Data in Ruby
+#JBinData - Parsing Binary Data in Ruby
 
 A declarative way to read and write structured binary data.
 
@@ -21,7 +21,7 @@ It's ugly, violates DRY and feels like you're writing Perl, not Ruby.
 
 There is a better way.
 
-    class Rectangle < BinData::Record
+    class Rectangle < JBinData::Record
       endian :little
       uint16 :len
       string :name, :read_length => :len
@@ -33,8 +33,7 @@ There is a better way.
     r = Rectangle.read(io)
     puts "Rectangle #{r.name} is #{r.width} x #{r.height}"
 {:ruby}
-
-BinData makes it easy to specify the structure of the data you are
+JBinData makes it easy to specify the structure of the data you are
 manipulating.
 
 It supports all the common datatypes that are found in structured binary
@@ -43,8 +42,7 @@ data. Support for dependent and variable length fields is built in.
 Last updated: 2012-07-24
 
 ## License
-
-BinData is released under the same license as Ruby.
+JBinData is released under the same license as Ruby.
 
 Copyright &copy; 2007 - 2012 [Dion Mendel](mailto:dion@lostrealm.com)
 
@@ -57,21 +55,19 @@ Want to donate?  My favourite local charity is
 
 # Installation
 
-You can install BinData via rubygems.
+You can installJBinData via rubygems.
 
     gem install bindata
 
 Alternatively, visit the 
-[download](http://rubyforge.org/frs/?group_id=3252) page and download
-BinData as a tar file.
+[download](http://rubyforge.org/frs/?group_id=3252) page and downloadJBinData as a tar file.
 
 ---------------------------------------------------------------------------
 
 # Overview
+JBinData declarations are easy to read.  Here's an example.
 
-BinData declarations are easy to read.  Here's an example.
-
-    class MyFancyFormat < BinData::Record
+    class MyFancyFormat < JBinData::Record
       stringz :comment
       uint8   :len
       array   :data, :type => :int32be, :initial_length => :len
@@ -90,7 +86,7 @@ This fancy format describes the following collection of data:
 :   A sequence of unsigned 32bit big endian integers.  The number of
     integers is given by the value of `:len`
 
-The BinData declaration matches the English description closely.
+TheJBinData declaration matches the English description closely.
 Compare the above declaration with the equivalent `#unpack` code to read
 such a data record.
 
@@ -101,10 +97,10 @@ such a data record.
     end
 {:ruby}
 
-The BinData declaration clearly shows the structure of the record.  The
+TheJBinData declaration clearly shows the structure of the record.  The
 `#unpack` code makes this structure opaque.
 
-The general usage of BinData is to declare a structured collection of
+The general usage ofJBinData is to declare a structured collection of
 data as a user defined record.  This record can be instantiated, read,
 written and manipulated without the user having to be concerned with the
 underlying binary data representation.
@@ -113,10 +109,10 @@ underlying binary data representation.
 
 # Records
 
-The general format of a BinData record declaration is a class containing
+The general format of aJBinData record declaration is a class containing
 one or more fields.
 
-    class MyName < BinData::Record
+    class MyName < JBinData::Record
       type field_name, :param1 => "foo", :param2 => bar, ...
       ...
     end
@@ -161,7 +157,7 @@ code produced is independent of architecture.  However, explicitly
 specifying the endian for each numeric field can result in a bloated
 declaration that is difficult to read.
 
-    class A < BinData::Record
+    class A < JBinData::Record
       int16be  :a
       int32be  :b
       int16le  :c  # <-- Note little endian!
@@ -175,7 +171,7 @@ The `endian` keyword can be used to set the default endian.  This makes
 the declaration easier to read.  Any numeric field that doesn't use the
 default endian can explicitly override it.
 
-    class A < BinData::Record
+    class A < JBinData::Record
       endian :big
 
       int16   :a
@@ -212,9 +208,9 @@ preceding the string contains the string's length.
     io.write(str)
 {:ruby}
 
-Here's how we'd implement the same example with BinData.
+Here's how we'd implement the same example withJBinData.
 
-    class PascalString < BinData::Record
+    class PascalString < JBinData::Record
       uint8  :len,  :value => lambda { data.length }
       string :data, :read_length => :len
     end
@@ -235,7 +231,7 @@ Here's how we'd implement the same example with BinData.
 This syntax needs explaining.  Let's simplify by examining reading and
 writing separately.
 
-    class PascalStringReader < BinData::Record
+    class PascalStringReader < JBinData::Record
       uint8  :len
       string :data, :read_length => :len
     end
@@ -248,7 +244,7 @@ value of the `len` field.
 Note that `:read_length => :len` is syntactic sugar for
 `:read_length => lambda { len }`, as described previously.
 
-    class PascalStringWriter < BinData::Record
+    class PascalStringWriter < JBinData::Record
       uint8  :len, :value => lambda { data.length }
       string :data
     end
@@ -265,11 +261,10 @@ on one before it.  You can't have a string which has the characters
 first and the length afterwards.
 
 ## Nested Records
-
-BinData supports anonymous nested records.  The `struct` keyword declares
+JBinData supports anonymous nested records.  The `struct` keyword declares
 a nested structure that can be used to imply a grouping of related data.
 
-    class LabeledCoord < BinData::Record
+    class LabeledCoord < JBinData::Record
       string :label, :length => 20
 
       struct :coord do
@@ -287,14 +282,14 @@ a nested structure that can be used to imply a grouping of related data.
 This nested structure can be put in its own class and reused.
 The above example can also be declared as:
 
-    class Coord < BinData::Record
+    class Coord < JBinData::Record
       endian :little
       double :x
       double :z
       double :y
     end
 
-    class LabeledCoord < BinData::Record
+    class LabeledCoord < JBinData::Record
       string :label, :length => 20
       coord  :coord
     end
@@ -306,7 +301,7 @@ A record may contain optional fields.  The optional state of a field is
 decided by the `:onlyif` parameter.  If the value of this parameter is
 `false`, then the field will be as if it didn't exist in the record.
 
-    class RecordWithOptionalField < BinData::Record
+    class RecordWithOptionalField < JBinData::Record
       ...
       uint8  :comment_flag
       string :comment, :length => 20, :onlyif => :has_comment?
@@ -323,8 +318,7 @@ if the value of the `comment_flag` field is non zero.
 ---------------------------------------------------------------------------
 
 # Primitive Types
-
-BinData provides support for the most commonly used primitive types that
+JBinData provides support for the most commonly used primitive types that
 are used when working with binary data.  Namely:
 
 *   fixed size strings
@@ -341,10 +335,10 @@ with them as part of a record.
 
 Examples of individual usage:
 
-    int16 = BinData::Int16be.new(941)
+    int16 =JBinData::Int16be.new(941)
     int16.to_binary_s #=> "\003\255"
 
-    fl = BinData::FloatBe.read("\100\055\370\124") #=> 2.71828174591064
+    fl =JBinData::FloatBe.read("\100\055\370\124") #=> 2.71828174591064
     fl.num_bytes #=> 4
 
     fl * int16 #=> 2557.90320057996
@@ -357,7 +351,7 @@ There are several parameters that are specific to all primitives.
 :   This contains the initial value that the primitive will contain
     after initialization.  This is useful for setting default values.
 
-        obj = BinData::String.new(:initial_value => "hello ")
+        obj =JBinData::String.new(:initial_value => "hello ")
         obj + "world" #=> "hello world"
 
         obj.assign("good-bye " )
@@ -370,12 +364,12 @@ There are several parameters that are specific to all primitives.
     will not change the value.  This parameter is used to define
     constants or dependent fields.
 
-        pi = BinData::FloatLe.new(:value => Math::PI)
+        pi =JBinData::FloatLe.new(:value => Math::PI)
         pi.assign(3)
         puts pi #=> 3.14159265358979
 
 
-        class IntList < BinData::Record
+        class IntList < JBinData::Record
           uint8 :len, :value => lambda { data.length }
           array :data, :type => :uint32be
         end
@@ -391,18 +385,18 @@ There are several parameters that are specific to all primitives.
     [debugging](#debugging), rather than as a general error detection
     system.
 
-        obj = BinData::String.new(:check_value => lambda { /aaa/ =~ value })
+        obj =JBinData::String.new(:check_value => lambda { /aaa/ =~ value })
         obj.read("baaa!") #=> "baaa!"
         obj.read("bbb") #=> raises ValidityError
 
-        obj = BinData::String.new(:check_value => "foo")
+        obj =JBinData::String.new(:check_value => "foo")
         obj.read("foo") #=> "foo"
         obj.read("bar") #=> raises ValidityError
     {:ruby}
 
 ## Numerics
 
-There are three kinds of numeric types that are supported by BinData.
+There are three kinds of numeric types that are supported byJBinData.
 
 ### Byte based integers
 
@@ -455,7 +449,7 @@ bits (e.g. `uint8` vs `bit8`) is one of alignment.
 
 This example is packed as 3 bytes
 
-    class A < BinData::Record
+    class A < JBinData::Record
       bit4  :a
       uint8 :b
       bit4  :c
@@ -466,7 +460,7 @@ This example is packed as 3 bytes
 
 Whereas this example is packed into only 2 bytes
 
-    class B < BinData::Record
+    class B < JBinData::Record
       bit4 :a
       bit8 :b
       bit4 :c
@@ -476,8 +470,7 @@ Whereas this example is packed into only 2 bytes
 {:ruby}
 
 ### Floating point numbers
-
-BinData supports 32 and 64 bit floating point numbers, in both big and
+JBinData supports 32 and 64 bit floating point numbers, in both big and
 little endian format.  These types are:
 
 `float_le`
@@ -498,7 +491,7 @@ The `_be` | `_le` suffix may be omitted if the `endian` keyword is in use.
 
 Here is an example declaration for an Internet Protocol network packet.
 
-    class IP_PDU < BinData::Record
+    class IP_PDU < JBinData::Record
       endian :big
 
       bit4   :version, :value => 4
@@ -534,10 +527,9 @@ Three of the fields have parameters.
     the header.
 
 ## Strings
-
-BinData supports two types of strings - fixed size and zero terminated.
+JBinData supports two types of strings - fixed size and zero terminated.
 Strings are treated internally as a sequence of 8bit bytes.  This is the
-same as strings in Ruby 1.8.  BinData fully supports Ruby 1.9 string
+same as strings in Ruby 1.8. JBinData fully supports Ruby 1.9 string
 encodings.  See this [FAQ
 entry](#im_using_ruby_19_how_do_i_use_string_encodings_with_bindata) for
 details.
@@ -555,7 +547,7 @@ There are several parameters that are specific to fixed sized strings.
 
 :   The length in bytes to use when reading a value.
 
-        obj = BinData::String.new(:read_length => 5)
+        obj =JBinData::String.new(:read_length => 5)
         obj.read("abcdefghij")
         obj #=> "abcde"
     {:ruby}
@@ -565,15 +557,15 @@ There are several parameters that are specific to fixed sized strings.
 :   The fixed length of the string.  If a shorter string is set, it
     will be padded to this length.  Longer strings will be truncated.
 
-        obj = BinData::String.new(:length => 6)
+        obj =JBinData::String.new(:length => 6)
         obj.read("abcdefghij")
         obj #=> "abcdef"
 
-        obj = BinData::String.new(:length => 6)
+        obj =JBinData::String.new(:length => 6)
         obj.assign("abcd")
         obj #=> "abcd\000\000"
 
-        obj = BinData::String.new(:length => 6)
+        obj =JBinData::String.new(:length => 6)
         obj.assign("abcdefghij")
         obj #=> "abcdef"
     {:ruby}
@@ -583,7 +575,7 @@ There are several parameters that are specific to fixed sized strings.
 :   Boolean, default `false`.  Signifies that the padding occurs at the front
     of the string rather than the end.
 
-        obj = BinData::String.new(:length => 6, :pad_front => true)
+        obj =JBinData::String.new(:length => 6, :pad_front => true)
         obj.assign("abcd")
         obj.snapshot #=> "\000\000abcd"
     {:ruby}
@@ -594,7 +586,7 @@ There are several parameters that are specific to fixed sized strings.
     set length.  Valid values are `Integers` and `Strings` of one byte.
     Multi byte padding is not supported.
 
-        obj = BinData::String.new(:length => 6, :pad_byte => 'A')
+        obj =JBinData::String.new(:length => 6, :pad_byte => 'A')
         obj.assign("abcd")
         obj.snapshot #=> "abcdAA"
         obj.to_binary_s #=> "abcdAA"
@@ -606,7 +598,7 @@ There are several parameters that are specific to fixed sized strings.
     have all pad_bytes trimmed from the end of the string.  The value
     will not be trimmed when writing.
 
-        obj = BinData::String.new(:length => 6, :trim_value => true)
+        obj =JBinData::String.new(:length => 6, :trim_value => true)
         obj.assign("abcd")
         obj.snapshot #=> "abcd"
         obj.to_binary_s #=> "abcd\000\000"
@@ -617,7 +609,7 @@ There are several parameters that are specific to fixed sized strings.
 These strings are modelled on the C style of string - a sequence of
 bytes terminated by a null (`"\0"`) byte.
 
-    obj = BinData::Stringz.new
+    obj =JBinData::Stringz.new
     obj.read("abcd\000efgh")
     obj #=> "abcd"
     obj.num_bytes #=> 5
@@ -631,17 +623,17 @@ create a custom primitive type.
 
 Let us revisit the Pascal String example.
 
-    class PascalString < BinData::Record
+    class PascalString < JBinData::Record
       uint8  :len,  :value => lambda { data.length }
       string :data, :read_length => :len
     end
 {:ruby}
 
 We'd like to make `PascalString` a user defined type that behaves like a
-`BinData::BasePrimitive` object so we can use `:initial_value` etc.
+JBinData::BasePrimitive` object so we can use `:initial_value` etc.
 Here's an example usage of what we'd like:
 
-    class Favourites < BinData::Record
+    class Favourites < JBinData::Record
       pascal_string :language, :initial_value => "ruby"
       pascal_string :os,       :initial_value => "unix"
     end
@@ -652,10 +644,10 @@ Here's an example usage of what we'd like:
 {:ruby}
 
 We create this type of custom string by inheriting from
-`BinData::Primitive` (instead of `BinData::Record`) and implementing the
+JBinData::Primitive` (instead of JBinData::Record`) and implementing the
 `#get` and `#set` methods.
 
-    class PascalString < BinData::Primitive
+    class PascalString < JBinData::Primitive
       uint8  :len,  :value => lambda { data.length }
       string :data, :read_length => :len
 
@@ -673,7 +665,7 @@ Consider a LispBool type that uses `:t` for true and `nil` for false.
 The binary representation is a signed byte with value `1` for true and
 `-1` for false.
 
-    class LispBool < BinData::Primitive
+    class LispBool < JBinData::Primitive
       int8 :val
 
       def get
@@ -719,7 +711,7 @@ to undefined behaviour.
 ### Advanced User Defined Primitive Types
 
 Sometimes a user defined primitive type can not easily be declaratively
-defined.  In this case you should inherit from `BinData::BasePrimitive`
+defined.  In this case you should inherit from JBinData::BasePrimitive`
 and implement the following three methods:
 
 `def value_to_binary_string(value)`
@@ -746,7 +738,7 @@ Here is an example of a big integer implementation.
     #   x bytes : Little endian stream of 7 bit bytes representing the
     #             positive form of the integer.  The upper bit of each byte
     #             is set when there are more bytes in the stream.
-    class BigInteger < BinData::BasePrimitive
+    class BigInteger < JBinData::BasePrimitive
 
       def value_to_binary_string(value)
         negative = (value < 0) ? 1 : 0
@@ -801,7 +793,7 @@ Records, Arrays and Choices.
 
 ## Arrays
 
-A BinData array is a list of data objects of the same type.  It behaves
+AJBinData array is a list of data objects of the same type.  It behaves
 much the same as the standard Ruby array, supporting most of the common
 methods.
 
@@ -811,12 +803,12 @@ When instantiating an array, the type of object it contains must be
 specified.  The two different ways of declaring this are the `:type`
 parameter and the block form.
 
-    class A < BinData::Record
+    class A < JBinData::Record
       array :numbers, :type => :uint8, :initial_length => 3
     end
                   -vs-
 
-    class A < BinData::Record
+    class A < JBinData::Record
       array :numbers, :initial_length => 3 do
         uint8
       end
@@ -826,13 +818,13 @@ parameter and the block form.
 For the simple case, the `:type` parameter is usually clearer.  When the
 array type has parameters, the block form becomes easier to read.
 
-    class A < BinData::Record
+    class A < JBinData::Record
        array :numbers, :type => [:uint8, {:initial_value => :index}],
                        :initial_length => 3
     end
                   -vs-
 
-    class A < BinData::Record
+    class A < JBinData::Record
       array :numbers, :initial_length => 3 do
         uint8 :initial_value => :index
       end
@@ -843,11 +835,11 @@ An array can also be declared as a custom type by moving the contents of
 the block into a custom class.  The above example could alternatively be
 declared as:
 
-    class NumberArray < BinData::Array
+    class NumberArray < JBinData::Array
       uint8 :initial_value => :index
     end
 
-    class A < BinData::Record
+    class A < JBinData::Record
       number_array :numbers, :initial_length => 3
     end
 {:ruby}
@@ -857,7 +849,7 @@ If the block form has multiple types declared, they are interpreted as
 the contents of an [anonymous `struct`](#nested_records).  To illustrate
 this, consider the following representation of a polygon.
 
-    class Polygon < BinData::Record
+    class Polygon < JBinData::Record
       endian :little
       uint8 :num_points, :value => lambda { points.length }
       array :points, :initial_length => :num_points do
@@ -882,7 +874,7 @@ There are two different parameters that specify the length of the array.
 :    Specifies the initial length of a newly instantiated array.
      The array may grow as elements are inserted.
 
-        obj = BinData::Array.new(:type => :int8, :initial_length => 4)
+        obj =JBinData::Array.new(:type => :int8, :initial_length => 4)
         obj.read("\002\003\004\005\006\007")
         obj.snapshot #=> [2, 3, 4, 5]
     {:ruby}
@@ -896,22 +888,22 @@ There are two different parameters that specify the length of the array.
     parameter is the symbol `:eof`, then the array will read as much
     data from the stream as possible.
   
-        obj = BinData::Array.new(:type => :int8,
+        obj =JBinData::Array.new(:type => :int8,
                                  :read_until => lambda { index == 1 })
         obj.read("\002\003\004\005\006\007")
         obj.snapshot #=> [2, 3]
 
-        obj = BinData::Array.new(:type => :int8,
+        obj =JBinData::Array.new(:type => :int8,
                                  :read_until => lambda { element >= 3.5 })
         obj.read("\002\003\004\005\006\007")
         obj.snapshot #=> [2, 3, 4]
 
-        obj = BinData::Array.new(:type => :int8,
+        obj =JBinData::Array.new(:type => :int8,
                 :read_until => lambda { array[index] + array[index - 1] == 9 })
         obj.read("\002\003\004\005\006\007")
         obj.snapshot #=> [2, 3, 4, 5]
 
-        obj = BinData::Array.new(:type => :int8, :read_until => :eof)
+        obj =JBinData::Array.new(:type => :int8, :read_until => :eof)
         obj.read("\002\003\004\005\006\007")
         obj.snapshot #=> [2, 3, 4, 5, 6, 7]
     {:ruby}
@@ -930,14 +922,14 @@ Choices have two ways of specifying the possible data objects they can
 contain.  The `:choices` parameter or the block form.  The block form is
 usually clearer and is prefered.
 
-    class MyInt16 < BinData::Record
+    class MyInt16 < JBinData::Record
       uint8  :e, :check_value => lambda { value == 0 or value == 1 }
       choice :int, :selection => :e,
                    :choices => {0 => :int16be, 1 => :int16le}
     end
                   -vs-
 
-    class MyInt16 < BinData::Record
+    class MyInt16 < JBinData::Record
       uint8  :e, :check_value => lambda { value == 0 or value == 1 }
       choice :int, :selection => :e do
         int16be 0
@@ -949,12 +941,12 @@ usually clearer and is prefered.
 Like all compound types, a choice can be declared as its own type.  The
 above example can be declared as:
 
-    class BigLittleInt16 < BinData::Choice
+    class BigLittleInt16 < JBinData::Choice
       int16be 0
       int16le 1
     end
 
-    class MyInt16 < BinData::Record
+    class MyInt16 < JBinData::Record
       uint8  :e, :check_value => lambda { value == 0 or value == 1 }
       bit_little_int_16 :int, :selection => :e
     end
@@ -962,7 +954,7 @@ above example can be declared as:
 
 The general form of the choice is
 
-    class MyRecord < BinData::Record
+    class MyRecord < JBinData::Record
       choice :name, :selection => lambda { ... } do
         type key, :param1 => "foo", :param2 => "bar" ... # option 1
         type key, :param1 => "foo", :param2 => "bar" ... # option 2
@@ -1007,14 +999,14 @@ Examples
     type2 = [:string, {:value => "Type2"}]
     
     choices = {5 => type1, 17 => type2}
-    obj = BinData::Choice.new(:choices => choices, :selection => 5)
+    obj =JBinData::Choice.new(:choices => choices, :selection => 5)
     obj # => "Type1"
 
     choices = [ type1, type2 ]
-    obj = BinData::Choice.new(:choices => choices, :selection => 1)
+    obj =JBinData::Choice.new(:choices => choices, :selection => 1)
     obj # => "Type2"
 
-    class MyNumber < BinData::Record
+    class MyNumber < JBinData::Record
       int8 :is_big_endian
       choice :data, :selection => lambda { is_big_endian != 0 },
                     :copy_on_change => true do
@@ -1039,7 +1031,7 @@ selection isn't specified then the :default will be used.  The previous `MyNumbe
 example used a flag for endian.  Zero is little endian while any other value
 is big endian.  This can be concisely written as:
 
-    class MyNumber < BinData::Record
+    class MyNumber < JBinData::Record
       int8 :is_big_endian
       choice :data, :selection => :is_big_endian,
                     :copy_on_change => true do
@@ -1053,17 +1045,17 @@ is big endian.  This can be concisely written as:
 
 # Common Operations
 
-There are operations common to all BinData types, including user defined
+There are operations common to allJBinData types, including user defined
 ones.  These are summarised here.
 
 ## Reading and writing
 
 `::read(io)`
 
-:   Creates a BinData object and reads its value from the given string
+:   Creates aJBinData object and reads its value from the given string
     or `IO`.  The newly created object is returned.
 
-        obj = BinData::Int8.read("\xff")
+        obj =JBinData::Int8.read("\xff")
         obj.snapshot #=> -1
     {:ruby}
 
@@ -1071,7 +1063,7 @@ ones.  These are summarised here.
 
 :   Reads and assigns binary data read from `io`.
 
-        obj = BinData::Stringz.new
+        obj =JBinData::Stringz.new
         obj.read("string 1\0string 2\0")
         obj #=> "string 1"
     {:ruby}
@@ -1081,7 +1073,7 @@ ones.  These are summarised here.
 :   Writes the binary data representation of the object to `io`.
 
         File.open("...", "wb") do |io|
-          obj = BinData::Uint64be.new(568290145640170)
+          obj =JBinData::Uint64be.new(568290145640170)
           obj.write(io)
         end
     {:ruby}
@@ -1090,7 +1082,7 @@ ones.  These are summarised here.
 
 :   Returns the binary data representation of this object as a string.
 
-        obj = BinData::Uint16be.new(4660)
+        obj =JBinData::Uint16be.new(4660)
         obj.to_binary_s #=> "\022\064"
     {:ruby}
 
@@ -1102,7 +1094,7 @@ ones.  These are summarised here.
     format as produced by `#snapshot`, or it can be a compatible data
     object.
   
-        arr = BinData::Array.new(:type => :uint8)
+        arr =JBinData::Array.new(:type => :uint8)
         arr.assign([1, 2, 3, 4])
         arr.snapshot #=> [1, 2, 3, 4]
     {:ruby}
@@ -1111,7 +1103,7 @@ ones.  These are summarised here.
 
 :   Resets this object to its initial state.
 
-        obj = BinData::Int32be.new(:initial_value => 42)
+        obj =JBinData::Int32be.new(:initial_value => 42)
         obj.assign(50)
         obj.clear
         obj #=> 42
@@ -1121,7 +1113,7 @@ ones.  These are summarised here.
 
 :   Returns whether this object is in its initial state.
 
-        arr = BinData::Array.new(:type => :uint16be, :initial_length => 5)
+        arr =JBinData::Array.new(:type => :uint16be, :initial_length => 5)
         arr[3] = 42
         arr.clear? #=> false
 
@@ -1136,7 +1128,7 @@ ones.  These are summarised here.
 :   Returns the number of bytes required for the binary data
     representation of this object.
 
-        arr = BinData::Array.new(:type => :uint16be, :initial_length => 5)
+        arr =JBinData::Array.new(:type => :uint16be, :initial_length => 5)
         arr[0].num_bytes #=> 2
         arr.num_bytes #=> 10
     {:ruby}
@@ -1148,8 +1140,8 @@ ones.  These are summarised here.
     may be useful for serialization or as a reduced memory usage
     representation.
 
-        obj = BinData::Uint8.new(2)
-        obj.class #=> BinData::Uint8
+        obj =JBinData::Uint8.new(2)
+        obj.class #=>JBinData::Uint8
         obj + 3 #=> 5
 
         obj.snapshot #=> 2
@@ -1162,12 +1154,12 @@ ones.  These are summarised here.
     ancestor structure it is contained within.  This is most likely to
     be used with arrays and records.
 
-        class Tuple < BinData::Record
+        class Tuple < JBinData::Record
           int8 :a
           int8 :b
         end
 
-        arr = BinData::Array.new(:type => :tuple, :initial_length => 3)
+        arr =JBinData::Array.new(:type => :tuple, :initial_length => 3)
         arr[2].b.offset #=> 5
     {:ruby}
 
@@ -1176,12 +1168,12 @@ ones.  These are summarised here.
 :   Returns the offset of this object with respect to the parent
     structure it is contained within.  Compare this to `#offset`.
 
-        class Tuple < BinData::Record
+        class Tuple < JBinData::Record
           int8 :a
           int8 :b
         end
 
-        arr = BinData::Array.new(:type => :tuple, :initial_length => 3)
+        arr =JBinData::Array.new(:type => :tuple, :initial_length => 3)
         arr[2].b.rel_offset #=> 1
     {:ruby}
 
@@ -1195,23 +1187,21 @@ ones.  These are summarised here.
 # Advanced Topics
 
 ## Debugging
-
-BinData includes several features to make it easier to debug
+JBinData includes several features to make it easier to debug
 declarations.
 
 ### Tracing
-
-BinData has the ability to trace the results of reading a data
+JBinData has the ability to trace the results of reading a data
 structure.
 
-    class A < BinData::Record
+    class A < JBinData::Record
       int8  :a
       bit4  :b
       bit2  :c
       array :d, :initial_length => 6, :type => :bit1
     end
 
-    BinData::trace_reading do
+   JBinData::trace_reading do
       A.read("\373\225\220")
     end
 {:ruby}
@@ -1234,7 +1224,7 @@ Results in the following being written to `STDERR`.
 The rest keyword will consume the input stream from the current position
 to the end of the stream.
 
-    class A < BinData::Record
+    class A < JBinData::Record
       string :a, :read_length => 5
       rest   :rest
     end
@@ -1246,13 +1236,13 @@ to the end of the stream.
 
 ### Hidden fields
 
-The typical way to view the contents of a BinData record is to call
+The typical way to view the contents of aJBinData record is to call
 `#snapshot` or `#inspect`.  This gives all fields and their values.  The
 `hide` keyword can be used to prevent certain fields from appearing in
 this output.  This removes clutter and allows the developer to focus on
 what they are currently interested in.
 
-    class Testing < BinData::Record
+    class Testing < JBinData::Record
       hide :a, :b
       string :a, :read_length => 10
       string :b, :read_length => 10
@@ -1266,7 +1256,7 @@ what they are currently interested in.
 
 ## Parameterizing User Defined Types
 
-All BinData types have parameters that allow the behaviour of an object
+AllJBinData types have parameters that allow the behaviour of an object
 to be specified at initialization time.  User defined types may also
 specify parameters.  There are two types of parameters: mandatory and
 default.
@@ -1276,7 +1266,7 @@ default.
 Mandatory parameters must be specified when creating an instance of the
 type.
 
-    class Polygon < BinData::Record
+    class Polygon < JBinData::Record
       mandatory_parameter :num_vertices
 
       uint8 :num, :value => lambda { vertices.length }
@@ -1299,7 +1289,7 @@ type.
 Default parameters are optional.  These parameters have a default value
 that may be overridden when an instance of the type is created.
 
-    class Phrase < BinData::Primitive
+    class Phrase < JBinData::Primitive
       default_parameter :number => "three"
       default_parameter :adjective => "blind"
       default_parameter :noun => "mice"
@@ -1333,7 +1323,7 @@ initialisation time.
 Here we define an array that contains big endian 16 bit integers.  The
 array has a preferred initial length.
 
-    class IntArray < BinData::Array
+    class IntArray < JBinData::Array
       default_parameters :type => :uint16be, :initial_length => 5
     end
 
@@ -1349,7 +1339,7 @@ The initial length can be overridden at initialisation time.
 
 We can also use the block form syntax:
 
-    class IntArray < BinData::Array
+    class IntArray < JBinData::Array
       endian :big
       default_parameter :initial_length => 5
 
@@ -1364,7 +1354,7 @@ Some structures contain binary data that is irrelevant to your purposes.
 Say you are interested in 50 bytes of data located 10 megabytes into the
 stream.  One way of accessing this useful data is:
 
-    class MyData < BinData::Record
+    class MyData < JBinData::Record
       string :length => 10 * 1024 * 1024
       string :data, :length => 50
     end
@@ -1379,7 +1369,7 @@ If you don't need to preserve this data, an alternative is to use
 data and won't consume space in memory.  When writing it will write
 `:length` number of zero bytes.
 
-    class MyData < BinData::Record
+    class MyData < JBinData::Record
       skip :length => 10 * 1024 * 1024
       string :data, :length => 50
     end
@@ -1395,7 +1385,7 @@ stream.
 Consider a string followed by a 2 byte checksum.  The length of the string is
 not specified but is implied by the file length.
 
-    class StringWithChecksum < BinData::Record
+    class StringWithChecksum < JBinData::Record
       count_bytes_remaining :bytes_remaining
       string :the_string, :read_length => lambda { bytes_remaining - 2 }
       int16le :checksum
@@ -1414,7 +1404,7 @@ allow access to individual bits in an octet stream.
 
 Sometimes a bitfield has unused elements such as
 
-    class RecordWithBitfield < BinData::Record
+    class RecordWithBitfield < JBinData::Record
       bit1 :foo
       bit1 :bar
       bit1 :baz
@@ -1426,11 +1416,10 @@ Sometimes a bitfield has unused elements such as
 
 The problem with specifying an unused field is that the size of this
 field must be manually counted.  This is a potential source of errors.
-
-BinData provides a shortcut to skip to the next byte boundary with the
+JBinData provides a shortcut to skip to the next byte boundary with the
 `resume_byte_alignment` keyword.
 
-    class RecordWithBitfield < BinData::Record
+    class RecordWithBitfield < JBinData::Record
       bit1 :foo
       bit1 :bar
       bit1 :baz
@@ -1444,7 +1433,7 @@ Occasionally you will come across a format where primitive types (string
 and numerics) are not aligned on byte boundaries but are to be packed in
 the bit stream.
 
-    class PackedRecord < BinData::Record
+    class PackedRecord < JBinData::Record
       bit4     :a
       string   :b, :length => 2  # note: byte-aligned
       bit1     :c
@@ -1456,19 +1445,19 @@ the bit stream.
     obj.to_binary_s #=> "\360\377\377\200\377\377\340"
 {:ruby}
 
-The above declaration does not work as expected because BinData's
+The above declaration does not work as expected becauseJBinData's
 internal strings and integers are byte-aligned.  We need bit-aligned
 versions of `string` and `int16le`.
 
-    class BitString < BinData::String
+    class BitString < JBinData::String
       bit_aligned
     end
 
-    class BitInt16le < BinData::Int16le
+    class BitInt16le < JBinData::Int16le
       bit_aligned
     end
 
-    class PackedRecord < BinData::Record
+    class PackedRecord < JBinData::Record
       bit4        :a
       bit_string  :b, :length => 2
       bit1        :c
@@ -1484,15 +1473,14 @@ versions of `string` and `int16le`.
 
 # FAQ
 
-## I'm using Ruby 1.9.  How do I use string encodings with BinData?
-
-BinData will internally use 8bit binary strings to represent the data.
+## I'm using Ruby 1.9.  How do I use string encodings withJBinData?
+JBinData will internally use 8bit binary strings to represent the data.
 You do not need to worry about converting between encodings.
 
-If you wish BinData to present string data in a specific encoding, you
+If you wishJBinData to present string data in a specific encoding, you
 can override `#snapshot` as illustrated below:
 
-    class UTF8String < BinData::String
+    class UTF8String < JBinData::String
       def snapshot
         super.force_encoding('UTF-8')
       end
@@ -1512,8 +1500,7 @@ I'm doing this and it's slow.
       ...
     end
 {:ruby}
-
-BinData is optimized to be declarative.  For imperative use, the
+JBinData is optimized to be declarative.  For imperative use, the
 above naïve approach will be slow.  Below are faster alternatives.
 
 The fastest approach is to reuse objects by calling `#clear` instead of
@@ -1537,7 +1524,7 @@ If you can't reuse objects, then consider the prototype pattern.
 
 The prefered approach is to be declarative.
 
-    class FooList < BinData::Array
+    class FooList < JBinData::Array
       default_parameter :initial_length => 999
 
       foo :bar => "baz"
@@ -1565,13 +1552,13 @@ lists](http://bindata.rubyforge.org/svn/trunk/examples/list.rb).
 
 # Alternatives
 
-This section is purely historic.  All the alternatives to BinData are
+This section is purely historic.  All the alternatives toJBinData are
 no longer actively maintained.
 
-There are several alternatives to BinData.  Below is a comparison
-between BinData and its alternatives.
+There are several alternatives toJBinData.  Below is a comparison
+betweenJBinData and its alternatives.
 
-The short form is that BinData is the best choice for most cases.
+The short form is thatJBinData is the best choice for most cases.
 It is the most full featured of all the alternatives.  It is also 
 arguably the most readable and easiest way to parse and write
 binary data.
@@ -1579,7 +1566,7 @@ binary data.
 ### [BitStruct](http://rubyforge.org/projects/bit-struct)
 
 BitStruct is the most complete of all the alternatives.  It is
-declarative and supports most of the same primitive types as BinData.
+declarative and supports most of the same primitive types asJBinData.
 Its special feature is a self documenting feature for report generation.
 BitStruct's design choice is to favour speed over flexibility.
 
@@ -1589,7 +1576,7 @@ with any non trivial file formats.
 
 If speed is important and you are only dealing with simple binary data
 types then BitStruct might be a good choice.  For non trivial data
-types, BinData is the better choice.
+types,JBinData is the better choice.
 
 ### [BinaryParse](http://rubyforge.org/projects/binaryparse)
 

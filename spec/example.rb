@@ -1,8 +1,8 @@
-require 'bindata/base_primitive'
+require 'jbindata/base_primitive'
 
-class ExampleSingle < BinData::BasePrimitive
+class ExampleSingle < JBinData::BasePrimitive
   def self.io_with_value(val)
-    BinData::IO.new([val].pack("V"))
+   JBinData::IO.new([val].pack("V"))
   end
 
   private

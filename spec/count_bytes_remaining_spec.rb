@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata/count_bytes_remaining'
+require 'jbindata/count_bytes_remaining'
 
-describe BinData::CountBytesRemaining do
+describe JBinData::CountBytesRemaining do
   it { should == 0 }
   its(:num_bytes) { should be_zero }
 
@@ -29,10 +29,10 @@ describe BinData::CountBytesRemaining do
     subject.to_binary_s.should == ""
   end
 
-  it "accepts BinData::BasePrimitive parameters" do
-    count = BinData::CountBytesRemaining.new(:check_value => 2)
+  it "acceptsJBinData::BasePrimitive parameters" do
+    count =JBinData::CountBytesRemaining.new(:check_value => 2)
     expect {
       count.read("xyz")
-    }.to raise_error(BinData::ValidityError)
+    }.to raise_error(JBinData::ValidityError)
   end
 end

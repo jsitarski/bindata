@@ -1,9 +1,9 @@
-require 'bindata'
+require 'jbindata'
 
 # An example reader for Minecraft's NBT format.
 # http://www.minecraft.net/docs/NBT.txt
 #
-# This is an example of how to write a BinData
+# This is an example of how to write aJBinData
 # declaration for a recursively defined file format.
 module Nbt
 
@@ -22,7 +22,7 @@ module Nbt
   }
 
   # NBT.txt line 25
-  class TagEnd < BinData::Primitive
+  class TagEnd < JBinData::Primitive
     def get; ""; end
     def set(v); end
 
@@ -30,37 +30,37 @@ module Nbt
   end
 
   # NBT.txt line 31
-  class TagByte < BinData::Int8
+  class TagByte < JBinData::Int8
     def to_formatted_s(indent = 0); to_s; end
   end
 
   # NBT.txt line 34
-  class TagShort < BinData::Int16be
+  class TagShort < JBinData::Int16be
     def to_formatted_s(indent = 0); to_s; end
   end
 
   # NBT.txt line 37
-  class TagInt < BinData::Int32be
+  class TagInt < JBinData::Int32be
     def to_formatted_s(indent = 0); to_s; end
   end
 
   # NBT.txt line 40
-  class TagLong < BinData::Int64be
+  class TagLong < JBinData::Int64be
     def to_formatted_s(indent = 0); to_s; end
   end
 
   # NBT.txt line 43
-  class TagFloat < BinData::FloatBe
+  class TagFloat < JBinData::FloatBe
     def to_formatted_s(indent = 0); to_s; end
   end
 
   # NBT.txt line 46
-  class TagDouble < BinData::DoubleBe
+  class TagDouble < JBinData::DoubleBe
     def to_formatted_s(indent = 0); to_s; end
   end
 
   # NBT.txt line 49
-  class TagByteArray < BinData::Record
+  class TagByteArray < JBinData::Record
     int32be :len, :value => lambda { data.length }
     string  :data, :read_length => :len
 
@@ -70,7 +70,7 @@ module Nbt
   end
 
   # NBT.txt line 53
-  class TagString < BinData::Primitive
+  class TagString < JBinData::Primitive
     int16be :len, :value => lambda { data.length }
     string  :data, :read_length => :len
 
@@ -90,11 +90,11 @@ module Nbt
   ## eg. lists can contain lists can contain lists. 
 
   # Forward references used by Payload
-  class TagCompound < BinData::Record; end
-  class TagList < BinData::Record; end
+  class TagCompound < JBinData::Record; end
+  class TagList < JBinData::Record; end
 
   # NBT.txt line 10
-  class Payload < BinData::Choice
+  class Payload < JBinData::Choice
     tag_end        0
     tag_byte       1
     tag_short      2
@@ -109,7 +109,7 @@ module Nbt
   end
 
   # NBT.txt line 6, 27
-  class NamedTag < BinData::Record
+  class NamedTag < JBinData::Record
     int8 :tag_id
     tag_string :name,    :onlyif => :not_end_tag?
     payload    :payload, :onlyif => :not_end_tag?, :selection => :tag_id
@@ -126,7 +126,7 @@ module Nbt
   end
 
   # NBT.txt line 57
-  class TagList < BinData::Record
+  class TagList < JBinData::Record
     int8 :tag_id
     int32be :len, :value => lambda { data.length }
     array :data, :initial_length => :len do
@@ -145,7 +145,7 @@ module Nbt
   end
 
   # NBT.txt line 63
-  class TagCompound < BinData::Record
+  class TagCompound < JBinData::Record
     array :data, :read_until => lambda { element.tag_id == 0 } do
       named_tag
     end

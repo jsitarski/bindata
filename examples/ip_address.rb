@@ -1,9 +1,9 @@
-require 'bindata'
+require 'jbindata'
 
 # A custom type representing an IP address.
 # The underlying binary representation is a sequence of four octets.
 # The human accessible representation is a dotted quad.
-class IPAddr < BinData::Primitive
+class IPAddr < JBinData::Primitive
   array :octets, :type => :uint8, :initial_length => 4
 
   def set(val)

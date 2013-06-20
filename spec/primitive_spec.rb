@@ -1,18 +1,18 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata'
+require 'jbindata'
 
-describe BinData::Primitive do
+describe JBinData::Primitive do
   it "is not registered" do
     expect {
-      BinData::RegisteredClasses.lookup("Primitive")
-    }.to raise_error(BinData::UnRegisteredTypeError)
+     JBinData::RegisteredClasses.lookup("Primitive")
+    }.to raise_error(JBinData::UnRegisteredTypeError)
   end
 end
 
-describe BinData::Primitive, "all subclasses" do
-  class SubClassOfPrimitive < BinData::Primitive
+describe JBinData::Primitive, "all subclasses" do
+  class SubClassOfPrimitive < JBinData::Primitive
     expose_methods_for_testing
   end
 
@@ -24,10 +24,10 @@ describe BinData::Primitive, "all subclasses" do
   end
 end
 
-describe BinData::Primitive, "when defining with errors" do
+describe JBinData::Primitive, "when defining with errors" do
   it "fails on non registered types" do
     lambda {
-      class BadTypePrimitive < BinData::Primitive
+      class BadTypePrimitive < JBinData::Primitive
         non_registered_type :a
       end
     }.should raise_error_on_line(TypeError, 2) { |err|
@@ -37,7 +37,7 @@ describe BinData::Primitive, "when defining with errors" do
 
   it "fails on duplicate names" do
     lambda {
-      class DuplicateNamePrimitive < BinData::Primitive
+      class DuplicateNamePrimitive < JBinData::Primitive
         int8 :a
         int8 :b
         int8 :a
@@ -49,7 +49,7 @@ describe BinData::Primitive, "when defining with errors" do
 
   it "fails when field name shadows an existing method" do
     lambda {
-      class ExistingNamePrimitive < BinData::Primitive
+      class ExistingNamePrimitive < JBinData::Primitive
         int8 :object_id
       end
     }.should raise_error_on_line(NameError, 2) { |err|
@@ -59,7 +59,7 @@ describe BinData::Primitive, "when defining with errors" do
 
   it "fails on unknown endian" do
     lambda {
-      class BadEndianPrimitive < BinData::Primitive
+      class BadEndianPrimitive < JBinData::Primitive
         endian 'a bad value'
       end
     }.should raise_error_on_line(ArgumentError, 2) { |err|
@@ -68,8 +68,8 @@ describe BinData::Primitive, "when defining with errors" do
   end
 end
 
-describe BinData::Primitive do
-  class PrimitiveWithEndian < BinData::Primitive
+describe JBinData::Primitive do
+  class PrimitiveWithEndian < JBinData::Primitive
     endian :little
     int16 :a
     def get; self.a; end
@@ -123,8 +123,8 @@ describe BinData::Primitive do
   end
 end
 
-describe BinData::Primitive, "requiring custom parameters" do
-  class PrimitiveWithCustom < BinData::Primitive
+describe JBinData::Primitive, "requiring custom parameters" do
+  class PrimitiveWithCustom < JBinData::Primitive
     int8 :a, :initial_value => :iv
     def get; self.a; end
     def set(v); self.a = v; end
@@ -136,8 +136,8 @@ describe BinData::Primitive, "requiring custom parameters" do
   end
 end
 
-describe BinData::Primitive, "with custom mandatory parameters" do
-  class MandatoryPrimitive < BinData::Primitive
+describe JBinData::Primitive, "with custom mandatory parameters" do
+  class MandatoryPrimitive < JBinData::Primitive
     mandatory_parameter :arg1
 
     uint8 :a, :value => :arg1
@@ -155,8 +155,8 @@ describe BinData::Primitive, "with custom mandatory parameters" do
   end
 end
 
-describe BinData::Primitive, "with custom default parameters" do
-  class DefaultPrimitive < BinData::Primitive
+describe JBinData::Primitive, "with custom default parameters" do
+  class DefaultPrimitive < JBinData::Primitive
     default_parameter :arg1 => 5
 
     uint8 :a, :value => :arg1
@@ -179,8 +179,8 @@ describe BinData::Primitive, "with custom default parameters" do
   end
 end
 
-describe BinData::Primitive, "subclassed with default parameter" do
-  class ParentDerivedPrimitive < BinData::Primitive
+describe JBinData::Primitive, "subclassed with default parameter" do
+  class ParentDerivedPrimitive < JBinData::Primitive
     uint16be :a
     def get; self.a; end
     def set(v); self.a = v; end

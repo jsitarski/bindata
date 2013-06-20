@@ -1,6 +1,6 @@
-require 'bindata/registry'
+require 'jbindata/registry'
 
-module BinData
+module JBinData
 
   # Subclasses of this are sanitized
   class SanitizedParameter; end
@@ -137,7 +137,7 @@ module BinData
   end
   #----------------------------------------------------------------------------
 
-  # BinData objects are instantiated with parameters to determine their
+  #JBinData objects are instantiated with parameters to determine their
   # behaviour.  These parameters must be sanitized to ensure their values
   # are valid.  When instantiating many objects with identical parameters,
   # such as an array of records, there is much duplicated sanitizing.
@@ -146,7 +146,7 @@ module BinData
   # validation.
   #
   # SanitizedParameters is a hash-like collection of parameters.  Its purpose
-  # is to recursively sanitize the parameters of an entire BinData object chain
+  # is to recursively sanitize the parameters of an entireJBinData object chain
   # at a single time.
   class SanitizedParameters < Hash
 

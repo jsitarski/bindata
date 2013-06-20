@@ -1,23 +1,23 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata/stringz'
+require 'jbindata/stringz'
 
-describe BinData::Stringz, "when empty" do
+describe JBinData::Stringz, "when empty" do
   its(:value) { should == "" }
   its(:num_bytes) { should == 1 }
   its(:to_binary_s) { should == "\0" }
 end
 
-describe BinData::Stringz, "with value set" do
-  subject { BinData::Stringz.new("abcd") }
+describe JBinData::Stringz, "with value set" do
+  subject {JBinData::Stringz.new("abcd") }
 
   its(:value) { should == "abcd" }
   its(:num_bytes) { should == 5 }
   its(:to_binary_s) { should == "abcd\0" }
 end
 
-describe BinData::Stringz, "when reading" do
+describe JBinData::Stringz, "when reading" do
   it "stops at the first zero byte" do
     io = StringIO.new("abcd\0xyz\0")
     subject.read(io)
@@ -37,7 +37,7 @@ describe BinData::Stringz, "when reading" do
   end
 end
 
-describe BinData::Stringz, "when setting the value" do
+describe JBinData::Stringz, "when setting the value" do
   it "includes the zero byte in num_bytes total" do
     subject.assign("abcd")
     subject.num_bytes.should == 5
@@ -64,8 +64,8 @@ describe BinData::Stringz, "when setting the value" do
   end
 end
 
-describe BinData::Stringz, "with max_length" do
-  subject { BinData::Stringz.new(:max_length => 5) }
+describe JBinData::Stringz, "with max_length" do
+  subject {JBinData::Stringz.new(:max_length => 5) }
 
   it "reads less than max_length" do
     io = StringIO.new("abc\0xyz")

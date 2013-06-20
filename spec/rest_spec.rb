@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata/rest'
+require 'jbindata/rest'
 
-describe BinData::Rest do
+describe JBinData::Rest do
   it { should == "" }
 
   it "reads till end of stream" do
@@ -17,10 +17,10 @@ describe BinData::Rest do
     subject.to_binary_s.should == "123"
   end
 
-  it "accepts BinData::BasePrimitive parameters" do
-    rest = BinData::Rest.new(:check_value => "abc")
+  it "accepts JBinData::BasePrimitive parameters" do
+    rest = JBinData::Rest.new(:check_value => "abc")
     expect {
       rest.read("xyz")
-    }.to raise_error(BinData::ValidityError)
+    }.to raise_error(JBinData::ValidityError)
   end
 end

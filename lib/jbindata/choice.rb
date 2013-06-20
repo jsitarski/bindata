@@ -1,26 +1,26 @@
-require 'bindata/base'
-require 'bindata/dsl'
+require 'jbindata/base'
+require 'jbindata/dsl'
 
-module BinData
+module JBinData
   # A Choice is a collection of data objects of which only one is active
   # at any particular time.  Method calls will be delegated to the active
   # choice.
   #
-  #   require 'bindata'
+  #   require 'jbindata'
   #
   #   type1 = [:string, {:value => "Type1"}]
   #   type2 = [:string, {:value => "Type2"}]
   #
   #   choices = {5 => type1, 17 => type2}
-  #   a = BinData::Choice.new(:choices => choices, :selection => 5)
+  #   a =JBinData::Choice.new(:choices => choices, :selection => 5)
   #   a # => "Type1"
   #
   #   choices = [ type1, type2 ]
-  #   a = BinData::Choice.new(:choices => choices, :selection => 1)
+  #   a =JBinData::Choice.new(:choices => choices, :selection => 1)
   #   a # => "Type2"
   #
   #   choices = [ nil, nil, nil, type1, nil, type2 ]
-  #   a = BinData::Choice.new(:choices => choices, :selection => 3)
+  #   a =JBinData::Choice.new(:choices => choices, :selection => 3)
   #   a # => "Type1"
   #
   #
@@ -29,7 +29,7 @@ module BinData
   #   mychoice.choice = 'big'
   #
   #   choices = {'big' => :uint16be, 'little' => :uint16le}
-  #   a = BinData::Choice.new(:choices => choices, :copy_on_change => true,
+  #   a =JBinData::Choice.new(:choices => choices, :copy_on_change => true,
   #                           :selection => lambda { mychoice.choice })
   #   a.assign(256)
   #   a.to_binary_s #=> "\001\000"
@@ -57,7 +57,7 @@ module BinData
   # <tt>:copy_on_change</tt>:: If set to true, copy the value of the previous
   #                            selection to the current selection whenever the
   #                            selection changes.  Default is false.
-  class Choice < BinData::Base
+  class Choice < JBinData::Base
     include DSLMixin
 
     dsl_parser :choice

@@ -1,15 +1,15 @@
-require 'bindata/io'
-require 'bindata/lazy'
-require 'bindata/offset'
-require 'bindata/params'
-require 'bindata/registry'
-require 'bindata/sanitize'
+require 'jbindata/io'
+require 'jbindata/lazy'
+require 'jbindata/offset'
+require 'jbindata/params'
+require 'jbindata/registry'
+require 'jbindata/sanitize'
 
-module BinData
+module JBinData
   # Error raised when unexpected results occur when reading data from IO.
   class ValidityError < StandardError ; end
 
-  # ArgExtractors take the arguments passed to BinData::Base.new and
+  # ArgExtractors take the arguments passed toJBinData::Base.new and
   # separates them into [value, parameters, parent].
   class BaseArgExtractor
     @@empty_hash = Hash.new.freeze
@@ -18,7 +18,7 @@ module BinData
       args = the_args.dup
       value = parameters = parent = nil
 
-      if args.length > 1 and args.last.is_a? BinData::Base
+      if args.length > 1 and args.last.is_a? JBinData::Base
         parent = args.pop
       end
 
@@ -156,7 +156,7 @@ module BinData
 
     # Reads data into this data object.
     def read(io)
-      io = BinData::IO.new(io) unless BinData::IO === io
+      io = JBinData::IO.new(io) unless JBinData::IO === io
 
       @in_read = true
       clear
@@ -179,7 +179,7 @@ module BinData
 
     # Writes the value for this data object to +io+.
     def write(io)
-      io = BinData::IO.new(io) unless BinData::IO === io
+      io = JBinData::IO.new(io) unless JBinData::IO === io
 
       do_write(io)
       io.flush
@@ -193,7 +193,7 @@ module BinData
 
     # Returns the string representation of this data object.
     def to_binary_s
-      io = BinData::IO.create_string_io
+      io = JBinData::IO.create_string_io
       write(io)
       io.rewind
       io.read

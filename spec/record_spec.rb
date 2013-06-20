@@ -1,20 +1,20 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata'
+require 'jbindata'
 
-describe BinData::Record do
+describe JBinData::Record do
   it "is not registered" do
     expect {
-      BinData::RegisteredClasses.lookup("Record")
-    }.to raise_error(BinData::UnRegisteredTypeError)
+     JBinData::RegisteredClasses.lookup("Record")
+    }.to raise_error(JBinData::UnRegisteredTypeError)
   end
 end
 
-describe BinData::Record, "when defining with errors" do
+describe JBinData::Record, "when defining with errors" do
   it "fails on non registered types" do
     lambda {
-      class BadTypeRecord < BinData::Record
+      class BadTypeRecord < JBinData::Record
         non_registered_type :a
       end
     }.should raise_error_on_line(TypeError, 2) { |err|
@@ -24,7 +24,7 @@ describe BinData::Record, "when defining with errors" do
 
   it "gives correct error message for non registered nested types" do
     lambda {
-      class BadNestedTypeRecord < BinData::Record
+      class BadNestedTypeRecord < JBinData::Record
         array :a, :type => :non_registered_type
       end
     }.should raise_error_on_line(TypeError, 2) { |err|
@@ -34,32 +34,32 @@ describe BinData::Record, "when defining with errors" do
 
   it "gives correct error message for non registered nested types in blocks" do
     lambda {
-      class BadNestedTypeInBlockRecord < BinData::Record
+      class BadNestedTypeInBlockRecord < JBinData::Record
         array :a do
           non_registered_type
         end
       end
     }.should raise_error_on_line(TypeError, 3) { |err|
-      err.message.should == "unknown type 'non_registered_type' in #{BinData::Array}"
+      err.message.should == "unknown type 'non_registered_type' in #{JBinData::Array}"
     }
   end
 
   it "fails on nested choice when missing names" do
     lambda {
-      class MissingChoiceNamesRecord < BinData::Record
+      class MissingChoiceNamesRecord < JBinData::Record
         choice do
           int8 :a
           int8
         end
       end
     }.should raise_error_on_line(SyntaxError, 4) { |err|
-      err.message.should == "fields must either all have names, or none must have names in BinData::Choice"
+      err.message.should == "fields must either all have names, or none must have names in JBinData::Choice"
     }
   end
 
   it "fails on malformed names" do
     lambda {
-      class MalformedNameRecord < BinData::Record
+      class MalformedNameRecord < JBinData::Record
         int8 :a
         int8 "45"
       end
@@ -70,7 +70,7 @@ describe BinData::Record, "when defining with errors" do
 
   it "fails on duplicate names" do
     lambda {
-      class DuplicateNameRecord < BinData::Record
+      class DuplicateNameRecord < JBinData::Record
         int8 :a
         int8 :b
         int8 :a
@@ -82,7 +82,7 @@ describe BinData::Record, "when defining with errors" do
 
   it "fails on reserved names" do
     lambda {
-      class ReservedNameRecord < BinData::Record
+      class ReservedNameRecord < JBinData::Record
         int8 :a
         int8 :invert # from Hash.instance_methods
       end
@@ -93,7 +93,7 @@ describe BinData::Record, "when defining with errors" do
 
   it "fails when field name shadows an existing method" do
     lambda {
-      class ExistingNameRecord < BinData::Record
+      class ExistingNameRecord < JBinData::Record
         int8 :object_id
       end
     }.should raise_error_on_line(NameError, 2) { |err|
@@ -103,7 +103,7 @@ describe BinData::Record, "when defining with errors" do
 
   it "fails on unknown endian" do
     lambda {
-      class BadEndianRecord < BinData::Record
+      class BadEndianRecord < JBinData::Record
         endian 'a bad value'
       end
     }.should raise_error_on_line(ArgumentError, 2) { |err|
@@ -112,8 +112,8 @@ describe BinData::Record, "when defining with errors" do
   end
 end
 
-describe BinData::Record, "with anonymous fields" do
-  class AnonymousRecord < BinData::Record
+describe JBinData::Record, "with anonymous fields" do
+  class AnonymousRecord < JBinData::Record
     int8 'a', :initial_value => 10
     int8 ''
     int8 nil
@@ -140,8 +140,8 @@ describe BinData::Record, "with anonymous fields" do
   end
 end
 
-describe BinData::Record, "with hidden fields" do
-  class HiddenRecord < BinData::Record
+describe JBinData::Record, "with hidden fields" do
+  class HiddenRecord < JBinData::Record
     hide :b, :c
     int8 :a
     int8 'b', :initial_value => 10
@@ -169,8 +169,8 @@ describe BinData::Record, "with hidden fields" do
   end
 end
 
-describe BinData::Record, "with multiple fields" do
-  class MultiFieldRecord < BinData::Record
+describe JBinData::Record, "with multiple fields" do
+  class MultiFieldRecord < JBinData::Record
     int8 :a
     int8 :b
   end
@@ -184,8 +184,8 @@ describe BinData::Record, "with multiple fields" do
   end
 
   it "identifies accepted parameters" do
-    BinData::Record.accepted_parameters.all.should include(:hide)
-    BinData::Record.accepted_parameters.all.should include(:endian)
+   JBinData::Record.accepted_parameters.all.should include(:hide)
+   JBinData::Record.accepted_parameters.all.should include(:endian)
   end
 
   it "clears" do
@@ -229,8 +229,8 @@ describe BinData::Record, "with multiple fields" do
   end
 end
 
-describe BinData::Record, "with nested structs" do
-  class NestedStructRecord < BinData::Record
+describe JBinData::Record, "with nested structs" do
+  class NestedStructRecord < JBinData::Record
     int8   :a, :initial_value => 6
     struct :b, :the_val => :a do
       hide :w
@@ -285,8 +285,8 @@ describe BinData::Record, "with nested structs" do
   end
 end
 
-describe BinData::Record, "with nested array of primitives" do
-  class NestedPrimitiveArrayRecord < BinData::Record
+describe JBinData::Record, "with nested array of primitives" do
+  class NestedPrimitiveArrayRecord < JBinData::Record
     array :a, :initial_length => 3 do
       uint8 :value => lambda { index }
     end
@@ -299,8 +299,8 @@ describe BinData::Record, "with nested array of primitives" do
   end
 end
 
-describe BinData::Record, "with nested array of structs" do
-  class NestedStructArrayRecord < BinData::Record
+describe JBinData::Record, "with nested array of structs" do
+  class NestedStructArrayRecord < JBinData::Record
     array :a do
       uint8 :b
       uint8 :c
@@ -315,8 +315,8 @@ describe BinData::Record, "with nested array of structs" do
   end
 end
 
-describe BinData::Record, "with nested choice with implied keys" do
-  class NestedChoiceWithImpliedKeysRecord < BinData::Record
+describe JBinData::Record, "with nested choice with implied keys" do
+  class NestedChoiceWithImpliedKeysRecord < JBinData::Record
     choice :a, :selection => 1 do
       uint8 :value => 1
       uint8 :value => 2
@@ -328,8 +328,8 @@ describe BinData::Record, "with nested choice with implied keys" do
   its(:a) { should == 2 }
 end
 
-describe BinData::Record, "with nested choice with explicit keys" do
-  class NestedChoiceWithKeysRecord < BinData::Record
+describe JBinData::Record, "with nested choice with explicit keys" do
+  class NestedChoiceWithKeysRecord < JBinData::Record
     choice :a, :selection => 5 do
       uint8 3, :value => 1
       uint8 5, :value => 2
@@ -341,8 +341,8 @@ describe BinData::Record, "with nested choice with explicit keys" do
   its(:a) { should == 2 }
 end
 
-describe BinData::Record, "with nested choice with names" do
-  class NestedChoiceWithNamesRecord < BinData::Record
+describe JBinData::Record, "with nested choice with names" do
+  class NestedChoiceWithNamesRecord < JBinData::Record
     choice :a, :selection => "b" do
       uint8 "b", :value => 1
       uint8 "c", :value => 2
@@ -354,8 +354,8 @@ describe BinData::Record, "with nested choice with names" do
   its(:a) { should == 1 }
 end
 
-describe BinData::Record, "with an endian defined" do
-  class RecordWithEndian < BinData::Record
+describe JBinData::Record, "with an endian defined" do
+  class RecordWithEndian < JBinData::Record
     endian :little
 
     uint16 :a
@@ -397,8 +397,8 @@ describe BinData::Record, "with an endian defined" do
   end
 end
 
-describe BinData::Record, "defined recursively" do
-  class RecursiveRecord < BinData::Record
+describe JBinData::Record, "defined recursively" do
+  class RecursiveRecord < JBinData::Record
     endian  :big
     uint16  :val
     uint8   :has_nxt, :value => lambda { nxt.clear? ? 0 : 1 }
@@ -433,8 +433,8 @@ describe BinData::Record, "defined recursively" do
   end
 end
 
-describe BinData::Record, "with custom mandatory parameters" do
-  class MandatoryRecord < BinData::Record
+describe JBinData::Record, "with custom mandatory parameters" do
+  class MandatoryRecord < JBinData::Record
     mandatory_parameter :arg1
 
     uint8 :a, :value => :arg1
@@ -450,8 +450,8 @@ describe BinData::Record, "with custom mandatory parameters" do
   end
 end
 
-describe BinData::Record, "with custom default parameters" do
-  class DefaultRecord < BinData::Record
+describe JBinData::Record, "with custom default parameters" do
+  class DefaultRecord < JBinData::Record
     default_parameter :arg1 => 5
 
     uint8 :a, :value => :arg1
@@ -484,8 +484,8 @@ describe BinData::Record, "with custom default parameters" do
   end
 end
 
-describe BinData::Record, "with :onlyif" do
-  class OnlyIfRecord < BinData::Record
+describe JBinData::Record, "with :onlyif" do
+  class OnlyIfRecord < JBinData::Record
     uint8 :a, :initial_value => 3
     uint8 :b, :initial_value => 5, :onlyif => lambda { a == 3 }
     uint8 :c, :initial_value => 7, :onlyif => lambda { a != 3 }
@@ -503,8 +503,8 @@ describe BinData::Record, "with :onlyif" do
   end
 end
 
-describe BinData::Record, "derived classes" do
-  class ParentRecord < BinData::Record
+describe JBinData::Record, "derived classes" do
+  class ParentRecord < JBinData::Record
     uint8 :a
   end
 

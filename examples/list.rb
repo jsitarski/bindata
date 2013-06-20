@@ -1,4 +1,4 @@
-require 'bindata'
+require 'jbindata'
 
 # An example of a recursively defined data format.
 #
@@ -19,12 +19,12 @@ require 'bindata'
 #
 # A first attempt at a declaration would be:
 #
-#     class Atom < BinData::Record
+#     class Atom < JBinData::Record
 #       string  :tag, :length => 1, :check_value => 'a'
 #       int32be :val
 #     end
 #
-#     class List < BinData::Record
+#     class List < JBinData::Record
 #       string  :tag,  :length => 1, :check_value => 'l'
 #       int32be :num,  :value => lambda { vals.length }
 #       array   :vals, :initial_length => :num do
@@ -49,17 +49,17 @@ require 'bindata'
 #
 # The declaration then becomes:
 #
-#     class Term < BinData::Record; end  # forward declaration
+#     class Term < JBinData::Record; end  # forward declaration
 #     
-#     class Atom < BinData::Int32be
+#     class Atom < JBinData::Int32be
 #     end
 #     
-#     class List < BinData::Record
+#     class List < JBinData::Record
 #       int32be :num,  :value => lambda { vals.length }
 #       array   :vals, :type => :term, :initial_length => :num
 #     end
 #     
-#     class Term < BinData::Record
+#     class Term < JBinData::Record
 #       string :tag, :length => 1
 #       choice :term, :selection => :tag do
 #         atom 'a'
@@ -68,9 +68,9 @@ require 'bindata'
 #     end
 
 
-class Term < BinData::Record; end  # Forward declaration
+class Term < JBinData::Record; end  # Forward declaration
 
-class Atom < BinData::Int32be
+class Atom < JBinData::Int32be
   def decode
     snapshot
   end
@@ -80,7 +80,7 @@ class Atom < BinData::Int32be
   end
 end
 
-class List < BinData::Record
+class List < JBinData::Record
   int32be :num,  :value => lambda { vals.length }
   array   :vals, :initial_length => :num, :type => :term
 
@@ -93,7 +93,7 @@ class List < BinData::Record
   end
 end
 
-class Term < BinData::Record
+class Term < JBinData::Record
   string :tag, :length => 1
   choice :term, :selection => :tag do
     atom 'a'

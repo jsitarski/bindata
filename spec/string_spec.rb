@@ -1,29 +1,29 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata/io'
-require 'bindata/string'
+require 'jbindata/io'
+require 'jbindata/string'
 
-describe BinData::String, "with mutually exclusive parameters" do
+describe JBinData::String, "with mutually exclusive parameters" do
   it ":value and :initial_value" do
     params = {:value => "", :initial_value => ""}
-    expect { BinData::String.new(params) }.to raise_error(ArgumentError)
+    expect {JBinData::String.new(params) }.to raise_error(ArgumentError)
   end
 
   it ":length and :read_length" do
     params = {:length => 5, :read_length => 5}
-    expect { BinData::String.new(params) }.to raise_error(ArgumentError)
+    expect {JBinData::String.new(params) }.to raise_error(ArgumentError)
   end
 
   it ":value and :length" do
     params = {:value => "", :length => 5}
-    expect { BinData::String.new(params) }.to raise_error(ArgumentError)
+    expect {JBinData::String.new(params) }.to raise_error(ArgumentError)
   end
 end
 
-describe BinData::String, "when assigning" do
-  let(:small) { BinData::String.new(:length => 3, :pad_byte => "A") }
-  let(:large) { BinData::String.new(:length => 5, :pad_byte => "B") }
+describe JBinData::String, "when assigning" do
+  let(:small) {JBinData::String.new(:length => 3, :pad_byte => "A") }
+  let(:large) {JBinData::String.new(:length => 5, :pad_byte => "B") }
 
   it "copies data from small to large" do
     large.assign(small)
@@ -36,8 +36,8 @@ describe BinData::String, "when assigning" do
   end
 end
 
-describe BinData::String do
-  subject { BinData::String.new("testing") }
+describe JBinData::String do
+  subject {JBinData::String.new("testing") }
 
   it "compares with regexp" do
     (/es/ =~ subject).should == 1
@@ -48,8 +48,8 @@ describe BinData::String do
   end
 end
 
-describe BinData::String, "with :read_length" do
-  subject { BinData::String.new(:read_length => 5) }
+describe JBinData::String, "with :read_length" do
+  subject {JBinData::String.new(:read_length => 5) }
 
   its(:num_bytes) { should == 0 }
   its(:value) { should == "" }
@@ -69,8 +69,8 @@ describe BinData::String, "with :read_length" do
   end
 end
 
-describe BinData::String, "with :length" do
-  subject { BinData::String.new(:length => 5) }
+describe JBinData::String, "with :length" do
+  subject {JBinData::String.new(:length => 5) }
 
   its(:num_bytes) { should == 5 }
   its(:value) { should == "\0\0\0\0\0" }
@@ -101,8 +101,8 @@ describe BinData::String, "with :length" do
   end
 end
 
-describe BinData::String, "with :read_length and :initial_value" do
-  subject { BinData::String.new(:read_length => 5, :initial_value => "abcdefghij") }
+describe JBinData::String, "with :read_length and :initial_value" do
+  subject {JBinData::String.new(:read_length => 5, :initial_value => "abcdefghij") }
 
   its(:num_bytes) { should == 10 }
   its(:value) { should == "abcdefghij" }
@@ -120,8 +120,8 @@ describe BinData::String, "with :read_length and :initial_value" do
   end
 end
 
-describe BinData::String, "with :read_length and :value" do
-  subject { BinData::String.new(:read_length => 5, :value => "abcdefghij") }
+describe JBinData::String, "with :read_length and :value" do
+  subject {JBinData::String.new(:read_length => 5, :value => "abcdefghij") }
 
   its(:num_bytes) { should == 10 }
   its(:value) { should == "abcdefghij" }
@@ -149,8 +149,8 @@ describe BinData::String, "with :read_length and :value" do
   end
 end
 
-describe BinData::String, "with :length and :initial_value" do
-  subject { BinData::String.new(:length => 5, :initial_value => "abcdefghij") }
+describe JBinData::String, "with :length and :initial_value" do
+  subject {JBinData::String.new(:length => 5, :initial_value => "abcdefghij") }
 
   its(:num_bytes) { should == 5 }
   its(:value) { should == "abcde" }
@@ -164,29 +164,29 @@ describe BinData::String, "with :length and :initial_value" do
   end
 end
 
-describe BinData::String, "with :pad_byte" do
+describe JBinData::String, "with :pad_byte" do
   it "accepts a numeric value for :pad_byte" do
-    str = BinData::String.new(:length => 5, :pad_byte => 6)
+    str =JBinData::String.new(:length => 5, :pad_byte => 6)
     str.assign("abc")
     str.should == "abc\x06\x06"
   end
 
   it "accepts a character for :pad_byte" do
-    str = BinData::String.new(:length => 5, :pad_byte => "R")
+    str =JBinData::String.new(:length => 5, :pad_byte => "R")
     str.assign("abc")
     str.should == "abcRR"
   end
 
   it "does not accept a string for :pad_byte" do
     params = {:length => 5, :pad_byte => "RR"}
-    lambda { BinData::String.new(params) }.should raise_error(ArgumentError)
+    lambda {JBinData::String.new(params) }.should raise_error(ArgumentError)
   end
 end
 
-describe BinData::String, "with :trim_padding" do
+describe JBinData::String, "with :trim_padding" do
   it "set false is the default" do
-    str1 = BinData::String.new(:length => 5)
-    str2 = BinData::String.new(:length => 5, :trim_padding => false)
+    str1 =JBinData::String.new(:length => 5)
+    str2 =JBinData::String.new(:length => 5, :trim_padding => false)
     str1.assign("abc")
     str2.assign("abc")
     str1.should == "abc\0\0"
@@ -194,7 +194,7 @@ describe BinData::String, "with :trim_padding" do
   end
 
   context "trim padding set" do
-    subject { BinData::String.new(:pad_byte => 'R', :trim_padding => true) }
+    subject {JBinData::String.new(:pad_byte => 'R', :trim_padding => true) }
 
     it "trims the value" do
       subject.assign("abcRR")
@@ -218,10 +218,10 @@ describe BinData::String, "with :trim_padding" do
   end
 end
 
-describe BinData::String, "with :pad_front" do
+describe JBinData::String, "with :pad_front" do
   it "set false is the default" do
-    str1 = BinData::String.new(:length => 5)
-    str2 = BinData::String.new(:length => 5, :pad_front => false)
+    str1 =JBinData::String.new(:length => 5)
+    str2 =JBinData::String.new(:length => 5, :pad_front => false)
     str1.assign("abc")
     str2.assign("abc")
     str1.should == "abc\0\0"
@@ -229,19 +229,19 @@ describe BinData::String, "with :pad_front" do
   end
 
   it "pads to the front" do
-    str = BinData::String.new(:length => 5, :pad_byte => 'R', :pad_front => true)
+    str =JBinData::String.new(:length => 5, :pad_byte => 'R', :pad_front => true)
     str.assign("abc")
     str.should == "RRabc"
   end
 
   it "can alternatively be accesses by :pad_left" do
-    str = BinData::String.new(:length => 5, :pad_byte => 'R', :pad_left => true)
+    str =JBinData::String.new(:length => 5, :pad_byte => 'R', :pad_left => true)
     str.assign("abc")
     str.should == "RRabc"
   end
 
   context "and :trim_padding" do
-    subject { BinData::String.new(:length => 5, :pad_byte => 'R', :pad_front => true, :trim_padding => true) }
+    subject {JBinData::String.new(:length => 5, :pad_byte => 'R', :pad_front => true, :trim_padding => true) }
 
     it "assigns" do
       subject.assign("abc")
@@ -260,9 +260,9 @@ describe BinData::String, "with :pad_front" do
   end
 end
 
-describe BinData::String, "with Ruby 1.9 encodings" do
+describe JBinData::String, "with Ruby 1.9 encodings" do
   if RUBY_VERSION >= "1.9"
-    class UTF8String < BinData::String
+    class UTF8String < JBinData::String
       def snapshot
         super.force_encoding('UTF-8')
       end

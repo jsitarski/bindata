@@ -1,4 +1,4 @@
-module BinData
+module JBinData
   # reference to the current tracer
   @tracer ||= nil
 
@@ -20,9 +20,9 @@ module BinData
     end
   end
 
-  # Turn on trace information when reading a BinData object.
+  # Turn on trace information when reading aJBinData object.
   # If +block+ is given then the tracing only occurs for that block.
-  # This is useful for debugging a BinData declaration.
+  # This is useful for debugging aJBinData declaration.
   def trace_reading(io = STDERR, &block)
     @tracer = Tracer.new(io)
     BasePrimitive.turn_on_tracing
@@ -44,7 +44,7 @@ module BinData
 
   module_function :trace_reading, :trace_message
 
-  class BasePrimitive < BinData::Base
+  class BasePrimitive < JBinData::Base
     class << self
       def turn_on_tracing
         alias_method :hook_after_do_read, :trace_value
@@ -61,14 +61,14 @@ module BinData
     def null_method; end
 
     def trace_value
-      BinData::trace_message do |tracer|
+      JBinData::trace_message do |tracer|
         value_string = _value.inspect
         tracer.trace_obj(debug_name, value_string)
       end
     end
   end
 
-  class Choice < BinData::Base
+  class Choice < JBinData::Base
     class << self
       def turn_on_tracing
         alias_method :hook_before_do_read, :trace_selection
@@ -85,7 +85,7 @@ module BinData
     def null_method; end
 
     def trace_selection
-      BinData::trace_message do |tracer|
+      JBinData::trace_message do |tracer|
         selection_string = eval_parameter(:selection).inspect
         tracer.trace_obj("#{debug_name}-selection-", selection_string)
       end

@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), "spec_common"))
-require 'bindata/io'
+require 'jbindata/io'
 
-describe BinData::IO, "reading from non seekable stream" do
+describe JBinData::IO, "reading from non seekable stream" do
   before(:each) do
     @rd, @wr = IO::pipe
     if fork
       # parent
       @wr.close
-      @io = BinData::IO.new(@rd)
+      @io =JBinData::IO.new(@rd)
     else
       # child
       begin
@@ -45,9 +45,9 @@ describe BinData::IO, "reading from non seekable stream" do
   end
 end
 
-describe BinData::IO, "when reading" do
+describe JBinData::IO, "when reading" do
   let(:stream) { StringIO.new "abcdefghij" }
-  let(:io) { BinData::IO.new(stream) }
+  let(:io) {JBinData::IO.new(stream) }
 
   it "wraps strings in StringIO" do
     io.raw_io.class.should == StringIO
@@ -57,9 +57,9 @@ describe BinData::IO, "when reading" do
     io.raw_io.should == stream
   end
 
-  it "raises error when io is BinData::IO" do
+  it "raises error when io isJBinData::IO" do
     expect {
-      BinData::IO.new(BinData::IO.new(""))
+     JBinData::IO.new(JBinData::IO.new(""))
     }.to raise_error(ArgumentError)
   end
 
@@ -101,17 +101,17 @@ describe BinData::IO, "when reading" do
   end
 end
 
-describe BinData::IO, "when writing" do
+describe JBinData::IO, "when writing" do
   let(:stream) { StringIO.new }
-  let(:io) { BinData::IO.new(stream) }
+  let(:io) {JBinData::IO.new(stream) }
 
   it "does not wrap IO objects" do
     io.raw_io.should == stream
   end
 
-  it "raises error when io is BinData::IO" do
+  it "raises error when io isJBinData::IO" do
     expect {
-      BinData::IO.new(BinData::IO.new(""))
+     JBinData::IO.new(JBinData::IO.new(""))
     }.to raise_error(ArgumentError)
   end
 
@@ -129,11 +129,11 @@ describe BinData::IO, "when writing" do
   end
 end
 
-describe BinData::IO, "reading bits in big endian" do
+describe JBinData::IO, "reading bits in big endian" do
   let(:b1) { 0b1111_1010 }
   let(:b2) { 0b1100_1110 }
   let(:b3) { 0b0110_1010 }
-  let(:io) { BinData::IO.new([b1, b2, b3].pack("CCC")) }
+  let(:io) {JBinData::IO.new([b1, b2, b3].pack("CCC")) }
 
   it "reads a bitfield less than 1 byte" do
     io.readbits(3, :big).should == 0b111
@@ -175,11 +175,11 @@ describe BinData::IO, "reading bits in big endian" do
   end
 end
 
-describe BinData::IO, "reading bits in little endian" do
+describe JBinData::IO, "reading bits in little endian" do
   let(:b1) { 0b1111_1010 }
   let(:b2) { 0b1100_1110 }
   let(:b3) { 0b0110_1010 }
-  let(:io) { BinData::IO.new([b1, b2, b3].pack("CCC")) }
+  let(:io) {JBinData::IO.new([b1, b2, b3].pack("CCC")) }
 
   it "reads a bitfield less than 1 byte" do
     io.readbits(3, :little).should == 0b010
@@ -223,8 +223,8 @@ end
 
 class BitWriterHelper
   def initialize
-    @stringio = BinData::IO.create_string_io
-    @io = BinData::IO.new(@stringio)
+    @stringio =JBinData::IO.create_string_io
+    @io =JBinData::IO.new(@stringio)
   end
 
   def writebits(val, nbits, endian)
@@ -242,7 +242,7 @@ class BitWriterHelper
   end
 end
 
-describe BinData::IO, "writing bits in big endian" do
+describe JBinData::IO, "writing bits in big endian" do
   let(:io) { BitWriterHelper.new }
 
   it "writes a bitfield less than 1 byte" do
@@ -287,7 +287,7 @@ describe BinData::IO, "writing bits in big endian" do
   end
 end
 
-describe BinData::IO, "writing bits in little endian" do
+describe JBinData::IO, "writing bits in little endian" do
   let(:io) { BitWriterHelper.new }
 
   it "writes a bitfield less than 1 byte" do
@@ -332,12 +332,12 @@ describe BinData::IO, "writing bits in little endian" do
   end
 end
 
-describe BinData::IO, "with changing endian" do
+describe JBinData::IO, "with changing endian" do
   it "does not mix different endianess when reading" do
     b1 = 0b0110_1010
     b2 = 0b1110_0010
     str = [b1, b2].pack("CC")
-    io = BinData::IO.new(str)
+    io =JBinData::IO.new(str)
 
     io.readbits(3, :big).should == 0b011
     io.readbits(4, :little).should == 0b0010

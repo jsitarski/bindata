@@ -1,6 +1,6 @@
 require "bindata/base_primitive"
 
-module BinData
+module JBinData
   # A BinData::Stringz object is a container for a zero ("\0") terminated
   # string.
   #

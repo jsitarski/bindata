@@ -1,10 +1,10 @@
-require 'bindata/base_primitive'
+require 'jbindata/base_primitive'
 
-module BinData
+module JBinData
   # Resets the stream alignment to the next byte.  This is
   # only useful when using bit-based primitives.
   #
-  #    class MyRec < BinData::Record
+  #    class MyRec <JBinData::Record
   #      bit4 :a
   #      resume_byte_alignment
   #      bit4 :b
@@ -12,7 +12,7 @@ module BinData
   #
   #    MyRec.read("\x12\x34") #=> {"a" => 1, "b" => 3}
   #
-  class ResumeByteAlignment < BinData::Base
+  class ResumeByteAlignment < JBinData::Base
     def clear; end
     def clear?; true; end
     def assign(val); end
@@ -32,11 +32,11 @@ module BinData
   # become bit-aligned.  This allows them to be used at
   # non byte based boundaries.
   #
-  #     class BitString < BinData::String
+  #     class BitString <JBinData::String
   #       bit_aligned
   #     end
   #
-  #     class MyRecord < BinData::Record
+  #     class MyRecord <JBinData::Record
   #       bit4       :preamble
   #       bit_string :str, :length => 2
   #     end
@@ -69,15 +69,15 @@ module BinData
     end
   end
 
-  class BasePrimitive < BinData::Base
+  class BasePrimitive < JBinData::Base
     def self.bit_aligned
       include BitAligned
     end
   end
 
-  class Primitive < BinData::BasePrimitive
+  class Primitive < JBinData::BasePrimitive
     def self.bit_aligned
-      fail "'bit_aligned' is not needed for BinData::Primitives"
+      fail "'bit_aligned' is not needed forJBinData::Primitives"
     end
   end
 end
