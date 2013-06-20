@@ -1,4 +1,4 @@
-require "bindata/base_primitive"
+require "jbindata/base_primitive"
 
 module JBinData
   # A BinData::Stringz object is a container for a zero ("\0") terminated
@@ -24,7 +24,7 @@ module JBinData
   #
   # <tt>:max_length</tt>:: The maximum length of the string including the zero
   #                        byte.
-  class Stringz < BinData::BasePrimitive
+  class Stringz < JBinData::BasePrimitive
 
     optional_parameters :max_length
 
