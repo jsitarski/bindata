@@ -1,4 +1,4 @@
-require "bindata/base_primitive"
+require "jbindata/base_primitive"
 
 module JBinData
   # Skip will skip over bytes from the input stream.  If the stream is not
